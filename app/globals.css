@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --green-50: #f0faf0;
+  --green-100: #d4f0d2;
+  --green-200: #a8e0a4;
+  --green-400: #4ea84e;
+  --green-600: #2a7a2a;
+  --green-700: #1f5e1f;
+  --green-800: #163e16;
+  --green-900: #0c260c;
+  --earth-300: #c8a265;
+  --earth-500: #8b6035;
+  --cream: #fefcf8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+}
+
+@layer utilities {
+  .font-display { font-family: 'Playfair Display', serif; }
+  .bg-cream { background-color: var(--cream); }
+}
