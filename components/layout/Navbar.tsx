@@ -15,6 +15,8 @@ export function Navbar() {
 
   useEffect(() => {
     fetch('/api/auth/me').then(r => r.json()).then(d => setUser(d.user))
+
+    console.log(user);
   }, [])
 
   const logout = async () => {
