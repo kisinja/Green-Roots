@@ -39,3 +39,20 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
+
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: { category: true },
+    })
+    if (!product) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+    }
+    return NextResponse.json({ product })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Server error'
+    return NextResponse.json({ error: msg }, { status: 500 })
+  }
+}
