@@ -6,21 +6,55 @@ import { requireAuth } from '@/lib/auth'
 export async function POST(req: NextRequest) {
   try {
     await requireAuth()
+
     const { orderId, phone, amount } = await req.json()
 
     if (!orderId || !phone || !amount) {
-      return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
+      return NextResponse.json(
+        { error: 'Missing fields' },
+        { status: 400 }
+      )
     }
 
-    const result = await initiateStkPush({ phone, amount, orderId })
+    const result = await initiateStkPush({
+      phone,
+      amount,
+      orderId,
+    })
 
-    if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 400 })
+    // STK failed
+    if (!result.success || !result.checkoutRequestId) {
+      return NextResponse.json(
+        {
+          error: result.error || 'STK push failed',
+        },
+        { status: 400 }
+      )
     }
 
-    return NextResponse.json({ checkoutRequestId: result.checkoutRequestId })
+    // Save CheckoutRequestID temporarily
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        mpesaRef: result.checkoutRequestId,
+      },
+    })
+
+    return NextResponse.json({
+      success: true,
+      checkoutRequestId: result.checkoutRequestId,
+    })
   } catch (err) {
-    const msg = err instanceof Error ? err.message : 'Server error'
-    return NextResponse.json({ error: msg }, { status: 500 })
+    console.error('STK Route Error:', err)
+
+    return NextResponse.json(
+      {
+        error:
+          err instanceof Error
+            ? err.message
+            : 'Server error',
+      },
+      { status: 500 }
+    )
   }
 }

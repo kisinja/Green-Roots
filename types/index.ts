@@ -10,7 +10,7 @@ export interface Product {
   featured: boolean
   category: { id: string; name: string; slug: string; emoji: string }
   categoryId: string
-  createdAt: string
+  createdAt: Date | string
 }
 
 export interface Category {

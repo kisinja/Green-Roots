@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {prisma} from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 import slugify from "slugify";
 
@@ -7,22 +7,17 @@ import slugify from "slugify";
 export async function GET() {
   try {
     const categories = await prisma.category.findMany({
-      orderBy: {
-        name: "asc",
-      },
+      orderBy: { name: "asc" },
       include: {
         _count: {
-          select: {
-            products: true,
-          },
+          select: { products: true },
         },
       },
     });
 
-    return NextResponse.json({categories});
+    // ✅ return ARRAY directly (IMPORTANT)
+    return NextResponse.json(categories);
   } catch (error) {
-    console.error("GET CATEGORIES ERROR:", error);
-
     return NextResponse.json(
       { message: "Failed to fetch categories" },
       { status: 500 }
@@ -61,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     if (existingCategory) {
       return NextResponse.json(
-        { message: "Category already exists" },
+        { message: "Category already exists (name or slug conflict)" },
         { status: 409 }
       );
     }

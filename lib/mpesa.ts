@@ -13,14 +13,40 @@ async function getAccessToken(): Promise<string> {
     headers: { Authorization: `Basic ${auth}` },
   })
   const data = await res.json()
+  console.log('ACCESS TOKEN RESPONSE:', data)
   return data.access_token
 }
 
 function getTimestamp(): string {
-  return new Date()
-    .toISOString()
-    .replace(/[^0-9]/g, '')
-    .slice(0, 14)
+  const date = new Date()
+
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const seconds = String(date.getSeconds()).padStart(2, '0')
+
+  return `${year}${month}${day}${hours}${minutes}${seconds}`
+}
+
+function normalizePhone(phone: string) {
+  let cleaned = phone.replace(/\s+/g, '');
+
+  if (cleaned.startsWith('+254')) {
+    return cleaned.substring(1);
+  }
+
+  if (cleaned.startsWith('254')) {
+    return cleaned;
+  }
+
+  if (cleaned.startsWith('0')) {
+    return '254' + cleaned.substring(1);
+  }
+
+  return cleaned;
 }
 
 export async function initiateStkPush({
@@ -40,7 +66,7 @@ export async function initiateStkPush({
     const password = Buffer.from(`${shortcode}${passkey}${timestamp}`).toString('base64')
 
     // Normalize phone: 0712345678 → 254712345678
-    const normalized = phone.replace(/^0/, '254').replace(/^\+/, '')
+    const normalized = normalizePhone(phone)
 
     const body = {
       BusinessShortCode: shortcode,
@@ -56,6 +82,12 @@ export async function initiateStkPush({
       TransactionDesc: 'GreenRoots Agrovet Order',
     }
 
+    console.log({
+      shortcode,
+      timestamp,
+      password,
+    })
+
     const res = await fetch(MPESA_STK_URL, {
       method: 'POST',
       headers: {
@@ -66,7 +98,7 @@ export async function initiateStkPush({
     })
 
     const data = await res.json()
-
+    console.log('STK PUSH RESPONSE:', data)
     if (data.ResponseCode === '0') {
       return { success: true, checkoutRequestId: data.CheckoutRequestID }
     }
