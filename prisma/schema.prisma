@@ -16,6 +16,7 @@ model User {
   role      Role     @default(CUSTOMER)
   createdAt DateTime @default(now())
   orders    Order[]
+  reviews   Review[]
 }
 
 enum Role {
@@ -45,6 +46,10 @@ model Product {
   category    Category    @relation(fields: [categoryId], references: [id])
   createdAt   DateTime    @default(now())
   orderItems  OrderItem[]
+  reviews     Review[]
+
+  averageRating Float     @default(0)
+  reviewCount  Int       @default(0)
 }
 
 model Order {
@@ -78,4 +83,25 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
   price     Float
+}
+
+model Review {
+  id String @id @default(cuid())
+
+  rating  Int // 1-5
+  comment String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  verifiedPurchase Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // prevent one user from reviewing the same product multiple times
+  @@unique([userId, productId])
 }

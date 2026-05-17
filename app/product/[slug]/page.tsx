@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { Product } from "@/types";
 import BackBtn from "@/components/ui/BackBtn";
 import AddToCartBtn from "@/components/ui/AddToCartBtn";
+import ProductReviews from "@/components/reviews/product-reviews";
 
 export default async function ProductDetailsPage({
   params,
@@ -78,19 +79,6 @@ export default async function ProductDetailsPage({
             {product.name}
           </h1>
 
-          {/* Rating */}
-          <div className="mt-5 flex items-center gap-2">
-            <div className="flex items-center gap-1 text-yellow-500">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <Star key={i} className="h-5 w-5 fill-current" />
-              ))}
-            </div>
-
-            <span className="text-sm text-black/50">
-              4.9 (128 verified farmers)
-            </span>
-          </div>
-
           {/* Price */}
           <div className="mt-8 flex items-end gap-3">
             <h2 className="text-5xl font-bold text-[var(--green-700)]">
@@ -107,8 +95,11 @@ export default async function ProductDetailsPage({
             {product.description}
           </p>
 
-          {/* Quantity + CTA */}
-          <AddToCartBtn product={product} quantity={1} />
+          <div className="flex flex-col my-2">
+            {/* Quantity + CTA */}
+            <AddToCartBtn product={product} quantity={1} />
+            <ProductReviews productId={product.id} />
+          </div>
 
           {/* Trust Indicators */}
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -152,90 +143,7 @@ export default async function ProductDetailsPage({
       </section>
 
       {/* Product Details Tabs */}
-      <section className="border-t border-black/5 bg-white/70 py-16 backdrop-blur">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            {/* Left */}
-            <div className="lg:col-span-2">
-              <div className="rounded-3xl border border-black/5 bg-white p-8 shadow-sm">
-                <h2 className="font-display text-3xl font-bold text-[var(--green-900)]">
-                  Product Information
-                </h2>
-
-                <div className="mt-6 space-y-5 text-black/70">
-                  <p>
-                    These premium hybrid tomato seeds are specially selected to
-                    produce high yields while maintaining excellent fruit
-                    quality and resistance against common crop diseases.
-                  </p>
-
-                  <p>
-                    Suitable for both greenhouse and open-field farming with
-                    optimal germination rates and consistent growth performance.
-                  </p>
-
-                  <ul className="space-y-3">
-                    <li>✅ High germination rate</li>
-                    <li>✅ Disease resistant variety</li>
-                    <li>✅ Suitable for all seasons</li>
-                    <li>✅ Recommended by agricultural experts</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* Right */}
-            <div className="space-y-6">
-              <div className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-                <h3 className="text-xl font-bold text-[var(--green-900)]">
-                  Quick Details
-                </h3>
-
-                <div className="mt-5 space-y-4 text-sm">
-                  <div className="flex justify-between border-b border-black/5 pb-3">
-                    <span className="text-black/50">Category</span>
-                    <span className="font-semibold">
-                      {product.category.name}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between border-b border-black/5 pb-3">
-                    <span className="text-black/50">Stock</span>
-                    <span className="font-semibold">{product.stock} Units</span>
-                  </div>
-
-                  <div className="flex justify-between border-b border-black/5 pb-3">
-                    <span className="text-black/50">SKU</span>
-                    <span className="font-semibold">
-                      AGR-{product.id.slice(0, 6).toUpperCase()}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-black/50">Featured</span>
-                    <span className="font-semibold">
-                      {product.featured ? "Yes" : "No"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-3xl bg-[var(--green-700)] p-6 text-white shadow-xl">
-                <h3 className="text-2xl font-bold">Need Help Choosing?</h3>
-
-                <p className="mt-3 text-white/80">
-                  Speak with our agricultural experts for personalized farming
-                  advice.
-                </p>
-
-                <button className="mt-6 w-full rounded-2xl bg-white px-5 py-4 font-semibold text-[var(--green-700)] transition hover:bg-[var(--green-50)]">
-                  Contact Support
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      
     </main>
   );
 }
