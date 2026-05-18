@@ -21,26 +21,70 @@ export async function POST(req: NextRequest) {
   try {
     await requireAdmin()
     const data = await req.json()
-    const { name, description, price, stock, emoji, badge, featured, categoryId } = data
+    const {
+      name,
+      description,
+      longDescription,
+      features,
+      specifications,
+      price,
+      stock,
+      emoji,
+      badge,
+      featured,
+      categoryId,
+    } = data;
 
     if (!name || !price || !categoryId) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    const parsedFeatures =
+      Array.isArray(features)
+        ? features
+        : typeof features === "string"
+        ? features
+            .split("\n")
+            .map((f: string) => f.trim())
+            .filter(Boolean)
+        : [];
+
+    const parsedSpecifications =
+      typeof specifications === "object"
+        ? specifications
+        : {};
+
     const product = await prisma.product.create({
       data: {
         name,
-        slug: slugify(name) + '-' + Date.now(),
-        description: description || '',
+        slug:
+          (slugify(name)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '')) + '-' + Date.now(),
+
+        description: description || "",
+        longDescription: longDescription || "",
+
+        features: parsedFeatures,
+        specifications: parsedSpecifications,
+
         price: Number(price),
         stock: Number(stock) || 0,
-        emoji: emoji || '📦',
+
+        emoji: emoji || "📦",
+
         badge: badge || null,
-        featured: featured || false,
+
+        featured: Boolean(featured),
+
         categoryId,
       },
-      include: { category: true },
-    })
+
+      include: {
+        category: true,
+      },
+    });
 
     return NextResponse.json({ product }, { status: 201 })
   } catch (err) {

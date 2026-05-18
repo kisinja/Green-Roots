@@ -11,6 +11,13 @@ export interface Product {
   category: { id: string; name: string; slug: string; emoji: string }
   categoryId: string
   createdAt: Date | string
+
+  longDescription?: string | null;
+  features?: string[]
+  specifications?: Record<string, string>
+
+  averageRating?: number
+  reviewCount?: number
 }
 
 export interface Category {

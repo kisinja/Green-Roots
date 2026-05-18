@@ -12,22 +12,46 @@ interface Category {
 interface ProductForm {
   name: string;
   description: string;
+  longDescription: string;
+
+  features: string;
+
+  plantingSeason: string;
+  maturity: string;
+  seedType: string;
+  farmingMethod: string;
+
   price: string;
   stock: string;
+
   emoji: string;
   badge: string;
+
   featured: boolean;
+
   categoryId: string;
 }
 
 const INITIAL_FORM: ProductForm = {
   name: "",
   description: "",
+  longDescription: "",
+
+  features: "",
+
+  plantingSeason: "",
+  maturity: "",
+  seedType: "",
+  farmingMethod: "",
+
   price: "",
   stock: "0",
+
   emoji: "📦",
   badge: "",
+
   featured: false,
+
   categoryId: "",
 };
 
@@ -35,9 +59,12 @@ export default function NewProductPage() {
   const router = useRouter();
 
   const [form, setForm] = useState<ProductForm>(INITIAL_FORM);
+
   const [categories, setCategories] = useState<Category[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -52,8 +79,9 @@ export default function NewProductPage() {
         }
 
         const data = await res.json();
+        console.log(data);
 
-        setCategories(Array.isArray(data.categories) ? data.categories : []);
+        setCategories(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error(err);
 
@@ -70,10 +98,7 @@ export default function NewProductPage() {
     loadCategories();
   }, []);
 
-  function set(
-    key: keyof ProductForm,
-    value: string | boolean
-  ) {
+  function set(key: keyof ProductForm, value: string | boolean) {
     setForm((prev) => ({
       ...prev,
       [key]: value,
@@ -84,38 +109,49 @@ export default function NewProductPage() {
     try {
       setError("");
 
-      if (
-        !form.name.trim() ||
-        !form.price ||
-        !form.categoryId
-      ) {
-        setError(
-          "Name, price and category are required."
-        );
+      if (!form.name.trim() || !form.price || !form.categoryId) {
+        setError("Name, price and category are required.");
+
         return;
       }
 
       setSaving(true);
 
+      const specifications = {
+        plantingSeason: form.plantingSeason,
+        maturity: form.maturity,
+        seedType: form.seedType,
+        farmingMethod: form.farmingMethod,
+      };
+
       const res = await fetch("/api/admin/products", {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
         },
+
         body: JSON.stringify({
           ...form,
+
           price: Number(form.price),
           stock: Number(form.stock),
+
           badge: form.badge || null,
+
+          features: form.features
+            .split("\n")
+            .map((f) => f.trim())
+            .filter(Boolean),
+
+          specifications,
         }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(
-          data.message || "Failed to create product"
-        );
+        throw new Error(data.error || "Failed to create product");
       }
 
       router.push("/admin/products");
@@ -134,7 +170,7 @@ export default function NewProductPage() {
 
   if (loading) {
     return (
-      <div className="p-6 flex items-center gap-2 text-sm text-gray-500">
+      <div className="flex items-center gap-2 p-6 text-sm text-gray-500">
         <span className="animate-spin">⏳</span>
         Loading categories...
       </div>
@@ -143,39 +179,34 @@ export default function NewProductPage() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <div className="max-w-4xl mx-auto p-6 md:p-8">
+      <div className="mx-auto max-w-5xl p-6 md:p-8">
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 mb-8">
+        <div className="mb-8 flex items-start justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+            <div className="mb-2 flex items-center gap-2 text-sm text-gray-500">
               <button
-                onClick={() =>
-                  router.push("/admin/products")
-                }
-                className="hover:text-[var(--green-700)] transition-colors"
+                onClick={() => router.push("/admin/products")}
+                className="transition-colors hover:text-[var(--green-700)]"
               >
                 Products
               </button>
 
               <span>/</span>
 
-              <span className="text-gray-800">
-                New Product
-              </span>
+              <span className="text-gray-800">New Product</span>
             </div>
 
-            <h1 className="text-4xl font-display text-[var(--green-900)] leading-tight">
-              Create product
+            <h1 className="font-display text-4xl leading-tight text-[var(--green-900)]">
+              Create Product
             </h1>
 
-            <p className="mt-2 text-gray-500 max-w-xl">
-              Add a new product to your inventory with
-              pricing, stock levels, category assignment and
-              featured visibility.
+            <p className="mt-2 max-w-xl text-gray-500">
+              Add a new agro product with specifications, farming details,
+              pricing and merchandising.
             </p>
           </div>
 
-          <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--green-50)] border border-[var(--green-100)]">
+          <div className="hidden items-center gap-2 rounded-xl border border-[var(--green-100)] bg-[var(--green-50)] px-4 py-2 md:flex">
             <span className="text-lg">🌿</span>
 
             <span className="text-sm font-medium text-[var(--green-700)]">
@@ -190,87 +221,183 @@ export default function NewProductPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-6">
-          {/* Main form */}
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_340px]">
+          {/* Main Form */}
           <div className="space-y-6">
             {/* Basic Info */}
-            <div className="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
-              <div className="px-6 py-5 border-b border-gray-100">
+            <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
+              <div className="border-b border-gray-100 px-6 py-5">
                 <h2 className="text-lg font-semibold text-gray-900">
-                  Basic information
+                  Basic Information
                 </h2>
 
-                <p className="text-sm text-gray-500 mt-1">
-                  Define the product identity customers will
-                  see.
+                <p className="mt-1 text-sm text-gray-500">
+                  Product identity shown to customers.
                 </p>
               </div>
 
-              <div className="p-6 space-y-5">
+              <div className="space-y-5 p-6">
                 <div className="grid grid-cols-[1fr_100px] gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Product name
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                      Product Name
                     </label>
 
                     <input
                       value={form.name}
-                      onChange={(e) =>
-                        set("name", e.target.value)
-                      }
-                      placeholder="e.g. Premium Dairy Meal"
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
+                      onChange={(e) => set("name", e.target.value)}
+                      placeholder="e.g. Hybrid Tomato Seeds"
+                      className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
                       Emoji
                     </label>
 
                     <input
                       value={form.emoji}
-                      onChange={(e) =>
-                        set("emoji", e.target.value)
-                      }
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 text-center text-2xl focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
+                      onChange={(e) => set("emoji", e.target.value)}
+                      className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-center text-2xl focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Description
+                  <label className="mb-2 block text-sm font-medium text-gray-700">
+                    Short Description
                   </label>
 
                   <textarea
-                    rows={5}
+                    rows={4}
                     value={form.description}
-                    onChange={(e) =>
-                      set("description", e.target.value)
-                    }
-                    placeholder="Describe the product benefits, usage and target customers..."
-                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 resize-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
+                    onChange={(e) => set("description", e.target.value)}
+                    placeholder="Short customer-facing product description..."
+                    className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-gray-700">
+                    Detailed Description
+                  </label>
+
+                  <textarea
+                    rows={6}
+                    value={form.longDescription}
+                    onChange={(e) => set("longDescription", e.target.value)}
+                    placeholder="Detailed farming/product information..."
+                    className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Features */}
+            <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
+              <div className="border-b border-gray-100 px-6 py-5">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Product Features
+                </h2>
+
+                <p className="mt-1 text-sm text-gray-500">
+                  Add one feature per line.
+                </p>
+              </div>
+
+              <div className="p-6">
+                <textarea
+                  rows={7}
+                  value={form.features}
+                  onChange={(e) => set("features", e.target.value)}
+                  placeholder={`High germination rate
+Disease resistant
+Suitable for all seasons
+High yield performance`}
+                  className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
+                />
+              </div>
+            </div>
+
+            {/* Specifications */}
+            <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
+              <div className="border-b border-gray-100 px-6 py-5">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Specifications
+                </h2>
+
+                <p className="mt-1 text-sm text-gray-500">
+                  Agricultural details and technical specifications.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-5 p-6 md:grid-cols-2">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-gray-700">
+                    Planting Season
+                  </label>
+
+                  <input
+                    value={form.plantingSeason}
+                    onChange={(e) => set("plantingSeason", e.target.value)}
+                    placeholder="e.g. All Seasons"
+                    className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-gray-700">
+                    Maturity
+                  </label>
+
+                  <input
+                    value={form.maturity}
+                    onChange={(e) => set("maturity", e.target.value)}
+                    placeholder="e.g. 75 Days"
+                    className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-gray-700">
+                    Seed Type
+                  </label>
+
+                  <input
+                    value={form.seedType}
+                    onChange={(e) => set("seedType", e.target.value)}
+                    placeholder="e.g. Hybrid F1"
+                    className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-gray-700">
+                    Farming Method
+                  </label>
+
+                  <input
+                    value={form.farmingMethod}
+                    onChange={(e) => set("farmingMethod", e.target.value)}
+                    placeholder="e.g. Greenhouse"
+                    className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
                   />
                 </div>
               </div>
             </div>
 
             {/* Pricing */}
-            <div className="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
-              <div className="px-6 py-5 border-b border-gray-100">
+            <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
+              <div className="border-b border-gray-100 px-6 py-5">
                 <h2 className="text-lg font-semibold text-gray-900">
-                  Pricing & inventory
+                  Pricing & Inventory
                 </h2>
-
-                <p className="text-sm text-gray-500 mt-1">
-                  Manage selling price and stock levels.
-                </p>
               </div>
 
-              <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 gap-5 p-6 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-medium text-gray-700">
                     Price (KES)
                   </label>
 
@@ -283,67 +410,52 @@ export default function NewProductPage() {
                       type="number"
                       min="0"
                       value={form.price}
-                      onChange={(e) =>
-                        set("price", e.target.value)
-                      }
-                      className="w-full pl-14 pr-4 py-3 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
+                      onChange={(e) => set("price", e.target.value)}
+                      className="w-full rounded-2xl border border-gray-200 py-3 pl-14 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Stock quantity
+                  <label className="mb-2 block text-sm font-medium text-gray-700">
+                    Stock Quantity
                   </label>
 
                   <input
                     type="number"
                     min="0"
                     value={form.stock}
-                    onChange={(e) =>
-                      set("stock", e.target.value)
-                    }
-                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
+                    onChange={(e) => set("stock", e.target.value)}
+                    className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Category */}
-            <div className="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
-              <div className="px-6 py-5 border-b border-gray-100">
+            {/* Product Settings */}
+            <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
+              <div className="border-b border-gray-100 px-6 py-5">
                 <h2 className="text-lg font-semibold text-gray-900">
-                  Product settings
+                  Product Settings
                 </h2>
-
-                <p className="text-sm text-gray-500 mt-1">
-                  Organize visibility and merchandising.
-                </p>
               </div>
 
-              <div className="p-6 space-y-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="space-y-5 p-6">
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
                       Category
                     </label>
 
                     <select
                       value={form.categoryId}
-                      onChange={(e) =>
-                        set("categoryId", e.target.value)
-                      }
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
+                      onChange={(e) => set("categoryId", e.target.value)}
+                      className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
                     >
-                      <option value="">
-                        Select category
-                      </option>
+                      <option value="">Select category</option>
 
                       {categories.map((category) => (
-                        <option
-                          key={category.id}
-                          value={category.id}
-                        >
+                        <option key={category.id} value={category.id}>
                           {category.emoji} {category.name}
                         </option>
                       ))}
@@ -351,17 +463,15 @@ export default function NewProductPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
                       Badge
                     </label>
 
                     <input
                       value={form.badge}
-                      onChange={(e) =>
-                        set("badge", e.target.value)
-                      }
+                      onChange={(e) => set("badge", e.target.value)}
                       placeholder="e.g. Bestseller"
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
+                      className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-400)]"
                     />
                   </div>
                 </div>
@@ -369,31 +479,24 @@ export default function NewProductPage() {
                 <div className="flex items-center justify-between rounded-2xl border border-gray-100 bg-gray-50 px-4 py-4">
                   <div>
                     <p className="text-sm font-medium text-gray-900">
-                      Featured product
+                      Featured Product
                     </p>
 
-                    <p className="text-sm text-gray-500 mt-1">
-                      Show this product prominently on the
-                      storefront.
+                    <p className="mt-1 text-sm text-gray-500">
+                      Highlight this product prominently on the storefront.
                     </p>
                   </div>
 
                   <button
                     type="button"
-                    onClick={() =>
-                      set("featured", !form.featured)
-                    }
-                    className={`relative w-14 h-7 rounded-full transition-colors ${
-                      form.featured
-                        ? "bg-[var(--green-600)]"
-                        : "bg-gray-300"
+                    onClick={() => set("featured", !form.featured)}
+                    className={`relative h-7 w-14 rounded-full transition-colors ${
+                      form.featured ? "bg-[var(--green-600)]" : "bg-gray-300"
                     }`}
                   >
                     <span
-                      className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-transform ${
-                        form.featured
-                          ? "translate-x-8"
-                          : "translate-x-1"
+                      className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow-md transition-transform ${
+                        form.featured ? "translate-x-8" : "translate-x-1"
                       }`}
                     />
                   </button>
@@ -402,89 +505,98 @@ export default function NewProductPage() {
             </div>
           </div>
 
-          {/* Sidebar Preview */}
+          {/* Preview Sidebar */}
           <div className="space-y-6">
-            <div className="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden sticky top-6">
-              <div className="px-6 py-5 border-b border-gray-100">
+            <div className="sticky top-6 overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
+              <div className="border-b border-gray-100 px-6 py-5">
                 <h2 className="text-lg font-semibold text-gray-900">
-                  Product preview
+                  Product Preview
                 </h2>
 
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="mt-1 text-sm text-gray-500">
                   Live storefront appearance
                 </p>
               </div>
 
               <div className="p-6">
-                <div className="rounded-3xl border border-gray-100 overflow-hidden bg-white">
-                  <div className="aspect-[4/3] bg-[var(--green-50)] flex items-center justify-center text-6xl">
+                <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white">
+                  <div className="flex aspect-[4/3] items-center justify-center bg-[var(--green-50)] text-6xl">
                     {form.emoji || "📦"}
                   </div>
 
                   <div className="p-5">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <h3 className="font-semibold text-gray-900 leading-tight">
-                          {form.name || "Product name"}
+                        <h3 className="leading-tight font-semibold text-gray-900">
+                          {form.name || "Product Name"}
                         </h3>
 
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="mt-1 text-sm text-gray-500">
                           {
-                            categories.find(
-                              (c) =>
-                                c.id === form.categoryId
-                            )?.name
+                            categories.find((c) => c.id === form.categoryId)
+                              ?.name
                           }
                         </p>
                       </div>
 
                       {form.badge && (
-                        <span className="px-2.5 py-1 rounded-full bg-[var(--green-50)] text-[var(--green-700)] text-xs font-semibold border border-[var(--green-100)]">
+                        <span className="rounded-full border border-[var(--green-100)] bg-[var(--green-50)] px-2.5 py-1 text-xs font-semibold text-[var(--green-700)]">
                           {form.badge}
                         </span>
                       )}
                     </div>
 
-                    <div className="mt-5 flex items-center justify-between">
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-gray-400">
-                          Price
-                        </p>
+                    <div className="mt-5">
+                      <p className="text-xs uppercase tracking-wide text-gray-400">
+                        Price
+                      </p>
 
-                        <p className="text-2xl font-bold text-[var(--green-700)]">
-                          {form.price
-                            ? `KES ${Number(
-                                form.price
-                              ).toLocaleString()}`
-                            : "KES 0"}
-                        </p>
-                      </div>
-
-                      <div className="text-right">
-                        <p className="text-xs uppercase tracking-wide text-gray-400">
-                          Stock
-                        </p>
-
-                        <p className="text-sm font-medium text-gray-700">
-                          {form.stock || 0} units
-                        </p>
-                      </div>
+                      <p className="text-2xl font-bold text-[var(--green-700)]">
+                        {form.price
+                          ? `KES ${Number(form.price).toLocaleString()}`
+                          : "KES 0"}
+                      </p>
                     </div>
 
+                    {form.features && (
+                      <div className="mt-5 border-t border-gray-100 pt-5">
+                        <p className="mb-3 text-xs uppercase tracking-wide text-gray-400">
+                          Features
+                        </p>
+
+                        <div className="space-y-2">
+                          {form.features
+                            .split("\n")
+                            .filter(Boolean)
+                            .slice(0, 4)
+                            .map((feature, index) => (
+                              <div
+                                key={index}
+                                className="flex gap-2 text-sm text-gray-600"
+                              >
+                                <span className="text-[var(--green-600)]">
+                                  ✓
+                                </span>
+
+                                <span>{feature}</span>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
                     {form.featured && (
-                      <div className="mt-5 rounded-2xl bg-[var(--green-600)] text-white text-sm font-medium px-4 py-3 text-center">
+                      <div className="mt-5 rounded-2xl bg-[var(--green-600)] px-4 py-3 text-center text-sm font-medium text-white">
                         🌟 Featured Product
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className="flex gap-3 mt-6">
+                <div className="mt-6 flex gap-3">
                   <button
-                    onClick={() =>
-                      router.push("/admin/products")
-                    }
-                    className="flex-1 px-4 py-3 rounded-2xl border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors"
+                    onClick={() => router.push("/admin/products")}
+                    className="flex-1 rounded-2xl border border-gray-200 px-4 py-3 text-sm font-medium transition-colors hover:bg-gray-50"
                   >
                     Cancel
                   </button>
@@ -492,11 +604,9 @@ export default function NewProductPage() {
                   <button
                     onClick={handleSubmit}
                     disabled={saving}
-                    className="flex-1 px-4 py-3 rounded-2xl bg-[var(--green-600)] hover:bg-[var(--green-700)] text-white text-sm font-semibold transition-colors disabled:opacity-50"
+                    className="flex-1 rounded-2xl bg-[var(--green-600)] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[var(--green-700)] disabled:opacity-50"
                   >
-                    {saving
-                      ? "Creating..."
-                      : "Create product"}
+                    {saving ? "Creating..." : "Create Product"}
                   </button>
                 </div>
               </div>

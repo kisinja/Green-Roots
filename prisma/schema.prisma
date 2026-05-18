@@ -36,15 +36,26 @@ model Product {
   id          String      @id @default(cuid())
   name        String
   slug        String      @unique
+
   description String
+  longDescription String?
+
   price       Float
   stock       Int         @default(0)
+
   emoji       String
   badge       String?
+
   featured    Boolean     @default(false)
+
+  features   String[]    @default([])
+  specifications Json?
+
   categoryId  String
   category    Category    @relation(fields: [categoryId], references: [id])
+
   createdAt   DateTime    @default(now())
+  
   orderItems  OrderItem[]
   reviews     Review[]
 
