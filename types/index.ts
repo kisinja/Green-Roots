@@ -6,6 +6,7 @@ export interface Product {
   price: number
   stock: number
   emoji: string
+  images?: string[]
   badge: string | null
   featured: boolean
   category: { id: string; name: string; slug: string; emoji: string }

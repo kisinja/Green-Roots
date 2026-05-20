@@ -43,6 +43,8 @@ model Product {
   price       Float
   stock       Int         @default(0)
 
+  images String[]    @default([])
+
   emoji       String
   badge       String?
 

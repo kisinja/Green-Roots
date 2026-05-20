@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
       badge,
       featured,
       categoryId,
+      images,
     } = data;
 
     if (!name || !price || !categoryId) {
@@ -79,6 +80,7 @@ export async function POST(req: NextRequest) {
         featured: Boolean(featured),
 
         categoryId,
+        images: images || [],
       },
 
       include: {

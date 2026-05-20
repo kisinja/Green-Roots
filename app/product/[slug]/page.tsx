@@ -1,5 +1,8 @@
 // app/products/[slug]/page.tsx
 
+import Image from "next/image";
+import { notFound } from "next/navigation";
+
 import {
   ShieldCheck,
   Truck,
@@ -16,7 +19,6 @@ import { Product } from "@/types";
 import BackBtn from "@/components/ui/BackBtn";
 import AddToCartBtn from "@/components/ui/AddToCartBtn";
 import ProductReviews from "@/components/reviews/product-reviews";
-import { notFound } from "next/navigation";
 
 export default async function ProductDetailsPage({
   params,
@@ -38,86 +40,149 @@ export default async function ProductDetailsPage({
   const specifications =
     (product.specifications as Record<string, string>) || {};
 
+  const images =
+    Array.isArray(product.images) && product.images.length > 0
+      ? product.images
+      : [];
+
   return (
-    <main className="min-h-screen bg-cream">
+    <main className="min-h-screen bg-[#fafcf8]">
       {/* Breadcrumb */}
-      <section className="border-b border-black/5 bg-white/70 backdrop-blur">
+      <section className="sticky top-0 z-30 border-b border-black/5 bg-white/80 backdrop-blur-xl">
         <BackBtn />
       </section>
 
       {/* Product Section */}
-      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-10 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-16">
-        {/* Product Image */}
-        <div className="relative overflow-hidden rounded-3xl border border-black/5 bg-gradient-to-br from-[var(--green-100)] via-white to-[var(--green-50)] shadow-xl">
-          {product.badge && (
-            <div className="absolute left-6 top-6 z-10 rounded-full bg-[var(--green-700)] px-4 py-2 text-sm font-semibold text-white shadow-lg">
-              {product.badge}
-            </div>
-          )}
+      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 py-8 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-14">
+        {/* LEFT - Product Images */}
+        <div className="space-y-5">
+          {/* Main Image */}
+          <div className="group relative overflow-hidden rounded-[2rem] border border-black/5 bg-white shadow-xl">
+            {product.badge && (
+              <div className="absolute left-5 top-5 z-20 rounded-full bg-[var(--green-700)] px-4 py-2 text-sm font-semibold text-white shadow-lg">
+                {product.badge}
+              </div>
+            )}
 
-          <div className="flex h-[500px] items-center justify-center">
-            <div className="flex h-64 w-64 items-center justify-center rounded-full bg-white text-[9rem] shadow-2xl">
-              {product.emoji}
-            </div>
+            {images.length > 0 ? (
+              <div className="relative aspect-square w-full overflow-hidden">
+                <Image
+                  src={images[0]}
+                  alt={product.name}
+                  fill
+                  priority
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+
+                {/* Gradient Overlay */}
+                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/20 to-transparent" />
+              </div>
+            ) : (
+              <div className="flex aspect-square items-center justify-center bg-gradient-to-br from-[var(--green-100)] via-white to-[var(--green-50)]">
+                <div className="flex h-64 w-64 items-center justify-center rounded-full bg-white text-[9rem] shadow-2xl">
+                  {product.emoji || "📦"}
+                </div>
+              </div>
+            )}
+
+            {/* Floating Accents */}
+            <div className="absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-[var(--green-200)] opacity-30 blur-3xl" />
+
+            <div className="absolute -left-10 top-20 h-40 w-40 rounded-full bg-[var(--earth-300)] opacity-20 blur-3xl" />
           </div>
 
-          {/* Floating Accents */}
-          <div className="absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-[var(--green-200)] opacity-40 blur-3xl" />
-
-          <div className="absolute -left-10 top-20 h-40 w-40 rounded-full bg-[var(--earth-300)] opacity-30 blur-3xl" />
+          {/* Thumbnail Gallery */}
+          {images.length > 1 && (
+            <div className="grid grid-cols-4 gap-4 sm:grid-cols-5">
+              {images.map((image: string, index: number) => (
+                <div
+                  key={index}
+                  className={`group relative overflow-hidden rounded-2xl border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md ${
+                    index === 0
+                      ? "border-[var(--green-600)] ring-2 ring-[var(--green-100)]"
+                      : "border-black/5"
+                  }`}
+                >
+                  <div className="relative aspect-square w-full">
+                    <Image
+                      src={image}
+                      alt={`${product.name} image ${index + 1}`}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Product Content */}
+        {/* RIGHT - Product Content */}
         <div className="flex flex-col justify-center">
           {/* Meta */}
-          <div className="mb-4 flex flex-wrap items-center gap-3">
-            <span className="rounded-full bg-[var(--green-100)] px-3 py-1 text-sm font-medium text-[var(--green-700)]">
+          <div className="mb-5 flex flex-wrap items-center gap-3">
+            <span className="rounded-full bg-[var(--green-100)] px-4 py-1.5 text-sm font-medium text-[var(--green-700)]">
               {product.category.name}
             </span>
 
             {product.stock > 0 ? (
-              <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-700">
+              <span className="rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-medium text-emerald-700">
                 In Stock
               </span>
             ) : (
-              <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700">
+              <span className="rounded-full bg-red-100 px-4 py-1.5 text-sm font-medium text-red-700">
                 Out of Stock
               </span>
             )}
 
             {product.featured && (
-              <span className="rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-700">
+              <span className="rounded-full bg-yellow-100 px-4 py-1.5 text-sm font-medium text-yellow-700">
                 ⭐ Featured
               </span>
             )}
           </div>
 
-          {/* Name */}
-          <h1 className="font-display text-4xl font-bold leading-tight text-[var(--green-900)] md:text-5xl">
+          {/* Product Name */}
+          <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-[var(--green-900)] md:text-5xl">
             {product.name}
           </h1>
 
+          {/* Rating */}
+          <div className="mt-5 flex items-center gap-3">
+            <div className="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1.5">
+              <Star size={15} className="fill-amber-400 text-amber-400" />
+
+              <span className="text-sm font-semibold text-amber-700">
+                {product.averageRating?.toFixed(1) || "0.0"}
+              </span>
+            </div>
+
+            <span className="text-sm text-black/50">
+              ({product.reviewCount || 0} reviews)
+            </span>
+          </div>
+
           {/* Price */}
-          <div className="mt-8 flex items-end gap-3">
-            <h2 className="text-5xl font-bold text-[var(--green-700)]">
+          <div className="mt-8 flex items-end gap-4">
+            <h2 className="text-5xl font-bold tracking-tight text-[var(--green-700)]">
               KSh {product.price.toLocaleString()}
             </h2>
 
-            <span className="mb-1 text-lg text-black/40 line-through">
-              KSh 1,500
+            <span className="mb-1 text-lg text-black/30 line-through">
+              KSh {(product.price * 1.2).toLocaleString()}
             </span>
           </div>
 
           {/* Description */}
-          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-black/70">
+          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-black/65">
             {product.description}
           </p>
 
           {/* Highlight Cards */}
-          <div className="mt-8 grid grid-cols-2 gap-4">
+          <div className="mt-10 grid grid-cols-2 gap-4">
             {specifications.seedType && (
-              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
-                <Leaf className="mb-2 h-5 w-5 text-[var(--green-700)]" />
+              <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
+                <Leaf className="mb-3 h-5 w-5 text-[var(--green-700)]" />
 
                 <p className="text-xs uppercase tracking-wide text-black/40">
                   Seed Type
@@ -130,8 +195,8 @@ export default async function ProductDetailsPage({
             )}
 
             {specifications.plantingSeason && (
-              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
-                <CalendarDays className="mb-2 h-5 w-5 text-[var(--green-700)]" />
+              <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
+                <CalendarDays className="mb-3 h-5 w-5 text-[var(--green-700)]" />
 
                 <p className="text-xs uppercase tracking-wide text-black/40">
                   Planting Season
@@ -144,8 +209,8 @@ export default async function ProductDetailsPage({
             )}
 
             {specifications.maturity && (
-              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
-                <Sprout className="mb-2 h-5 w-5 text-[var(--green-700)]" />
+              <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
+                <Sprout className="mb-3 h-5 w-5 text-[var(--green-700)]" />
 
                 <p className="text-xs uppercase tracking-wide text-black/40">
                   Maturity
@@ -158,8 +223,8 @@ export default async function ProductDetailsPage({
             )}
 
             {specifications.farmingMethod && (
-              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
-                <Package className="mb-2 h-5 w-5 text-[var(--green-700)]" />
+              <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
+                <Package className="mb-3 h-5 w-5 text-[var(--green-700)]" />
 
                 <p className="text-xs uppercase tracking-wide text-black/40">
                   Farming Method
@@ -173,13 +238,13 @@ export default async function ProductDetailsPage({
           </div>
 
           {/* CTA */}
-          <div className="my-8">
+          <div className="my-10">
             <AddToCartBtn product={product} quantity={1} />
           </div>
 
           {/* Trust Indicators */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl border border-black/5 bg-white p-5 shadow-sm">
+            <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
               <Truck className="mb-3 h-6 w-6 text-[var(--green-700)]" />
 
               <h3 className="font-semibold text-[var(--green-900)]">
@@ -191,7 +256,7 @@ export default async function ProductDetailsPage({
               </p>
             </div>
 
-            <div className="rounded-2xl border border-black/5 bg-white p-5 shadow-sm">
+            <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
               <ShieldCheck className="mb-3 h-6 w-6 text-[var(--green-700)]" />
 
               <h3 className="font-semibold text-[var(--green-900)]">
@@ -203,7 +268,7 @@ export default async function ProductDetailsPage({
               </p>
             </div>
 
-            <div className="rounded-2xl border border-black/5 bg-white p-5 shadow-sm">
+            <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
               <span className="mb-3 block text-2xl">🌱</span>
 
               <h3 className="font-semibold text-[var(--green-900)]">
@@ -219,13 +284,13 @@ export default async function ProductDetailsPage({
       </section>
 
       {/* Product Details */}
-      <section className="border-t border-black/5 bg-white/70 py-16 backdrop-blur">
+      <section className="border-t border-black/5 bg-white/60 py-16 backdrop-blur">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             {/* LEFT */}
             <div className="space-y-8 lg:col-span-2">
               {/* Information */}
-              <div className="rounded-3xl border border-black/5 bg-white p-8 shadow-sm">
+              <div className="rounded-[2rem] border border-black/5 bg-white p-8 shadow-sm">
                 <h2 className="font-display text-3xl font-bold text-[var(--green-900)]">
                   Product Information
                 </h2>
@@ -234,7 +299,7 @@ export default async function ProductDetailsPage({
                   <p className="leading-relaxed">{product.description}</p>
 
                   {product.longDescription && (
-                    <div className="rounded-2xl bg-[var(--green-50)] p-6">
+                    <div className="rounded-3xl bg-[var(--green-50)] p-6">
                       <h3 className="mb-3 text-lg font-semibold text-[var(--green-900)]">
                         Detailed Overview
                       </h3>
@@ -281,7 +346,7 @@ export default async function ProductDetailsPage({
             {/* RIGHT */}
             <div className="space-y-6">
               {/* Quick Details */}
-              <div className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
+              <div className="rounded-[2rem] border border-black/5 bg-white p-6 shadow-sm">
                 <h3 className="text-xl font-bold text-[var(--green-900)]">
                   Quick Details
                 </h3>
@@ -337,7 +402,7 @@ export default async function ProductDetailsPage({
               </div>
 
               {/* Help Card */}
-              <div className="rounded-3xl bg-[var(--green-700)] p-6 text-white shadow-xl">
+              <div className="rounded-[2rem] bg-[var(--green-700)] p-6 text-white shadow-xl">
                 <h3 className="text-2xl font-bold">Need Help Choosing?</h3>
 
                 <p className="mt-3 text-white/80">
@@ -351,7 +416,7 @@ export default async function ProductDetailsPage({
               </div>
 
               {/* Farming Tip */}
-              <div className="rounded-3xl border border-black/5 bg-gradient-to-br from-[var(--green-50)] to-white p-6 shadow-sm">
+              <div className="rounded-[2rem] border border-black/5 bg-gradient-to-br from-[var(--green-50)] to-white p-6 shadow-sm">
                 <h3 className="text-xl font-bold text-[var(--green-900)]">
                   🌿 Farming Tip
                 </h3>
