@@ -43,7 +43,7 @@ export default function BlogGrid({ initialPosts, totalPages }: BlogGridProps) {
     <div className="max-w-7xl mx-auto px-6 pb-20">
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-6 mb-12">
-        <div className="flex-1 relative my-6">
+        <div className="flex-1 relative my-2 md:my-0">
           <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-green-500 w-5 h-5" />
           <input
             type="text"

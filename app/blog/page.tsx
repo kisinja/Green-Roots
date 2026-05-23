@@ -26,7 +26,7 @@ export default async function BlogPage() {
       {/* Featured Section */}
       {featuredPosts.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 py-16">
-          <h2 className="text-4xl font-playfair text-green-800 mb-10">Featured Stories</h2>
+          <h2 className="text-4xl font-playfair text-green-800 mb-10">Featured Articles</h2>
           {/* We'll create this component next */}
         </section>
       )}
