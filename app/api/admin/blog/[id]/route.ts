@@ -4,18 +4,19 @@ import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
-  const post = await prisma.blogPost.findUnique({ where: { id: params.id } });
+  const resolvedParams = await params;
+  const post = await prisma.blogPost.findUnique({ where: { id: resolvedParams.id } });
   return NextResponse.json(post);
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
   const body = await req.json();
 
   const post = await prisma.blogPost.update({
-    where: { id: params.id },
+    where: { id: (await params).id },
     data: {
       ...body,
       slug: body.slug || body.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
@@ -26,8 +27,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json(post);
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
-  await prisma.blogPost.delete({ where: { id: params.id } });
+  const resolvedParams = await params;
+  await prisma.blogPost.delete({ where: { id: resolvedParams.id } });
   return NextResponse.json({ success: true });
 }
