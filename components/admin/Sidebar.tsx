@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 
 const links = [
   { name: "Dashboard", href: "/admin", icon: "🏠" },
+  { name: "Articles", href: "/admin/blog", icon: "📝" },
   { name: "Products", href: "/admin/products", icon: "📦" },
   { name: "Orders", href: "/admin/orders", icon: "🛒" },
   { name: "Categories", href: "/admin/categories", icon: "🗂️" },
@@ -49,7 +50,11 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             stroke="currentColor"
             strokeWidth={2}
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>

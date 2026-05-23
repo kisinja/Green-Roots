@@ -21,6 +21,9 @@ export default function BlogCard({ post }: BlogCardProps) {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    hour:"numeric",
+    minute:"2-digit",
+    hour12:true
   }).format(new Date(post.createdAt));
 
   return (

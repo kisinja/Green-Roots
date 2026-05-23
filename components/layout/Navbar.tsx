@@ -9,6 +9,7 @@ import {
   User,
   LogOut,
   Package,
+  Newspaper,         
 } from "lucide-react";
 
 import { useCart } from "@/store/cart";
@@ -89,6 +90,15 @@ export function Navbar() {
             className="text-white/75 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium transition-all"
           >
             Shop
+          </Link>
+
+          {/* New Blog Link */}
+          <Link
+            href="/blog"
+            className="text-white/75 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium transition-all flex items-center gap-1.5"
+          >
+            <Newspaper size={18} />
+            Blog
           </Link>
 
           {user?.role === "ADMIN" && (
@@ -182,6 +192,7 @@ export function Navbar() {
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden bg-[#1f5e1f] border-t border-white/10 px-4 py-3 space-y-1">
           <Link
@@ -198,6 +209,15 @@ export function Navbar() {
             className="block text-white/80 hover:text-white px-3 py-2.5 rounded-lg hover:bg-white/10 text-sm font-medium"
           >
             Shop
+          </Link>
+
+          <Link
+            href="/blog"
+            onClick={() => setMenuOpen(false)}
+            className="sm:block text-white/80 hover:text-white px-3 py-2.5 rounded-lg hover:bg-white/10 text-sm font-medium flex items-center gap-2"
+          >
+            <Newspaper size={18} />
+            Articles
           </Link>
 
           {user && (
