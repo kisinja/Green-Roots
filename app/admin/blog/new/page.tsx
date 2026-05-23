@@ -146,6 +146,7 @@ export default function NewBlogPost() {
               images={coverImages}
               onChange={setCoverImages}
               emoji="🌾"
+              type="blogImage"
             />
           </div>
 

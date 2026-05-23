@@ -5,10 +5,11 @@ import { useRef, useState } from "react";
 interface Props {
   images: string[];          // current URLs (already uploaded)
   onChange: (urls: string[]) => void;
-  emoji?: string;            // fallback emoji for empty state
+  emoji?: string;    
+  type?:string;        // fallback emoji for empty state
 }
 
-export default function ImageUploader({ images, onChange, emoji = "📦" }: Props) {
+export default function ImageUploader({ images, onChange, emoji = "📦", type = "productImage" }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -136,7 +137,7 @@ export default function ImageUploader({ images, onChange, emoji = "📦" }: Prop
       )}
 
       {/* Empty emoji fallback note */}
-      {images.length === 0 && (
+      {images.length === 0 && type === "productImage" && (
         <div className="flex items-center gap-2 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
           <span className="text-2xl">{emoji}</span>
           <p className="text-xs text-gray-500">
