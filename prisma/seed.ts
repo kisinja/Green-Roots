@@ -49,7 +49,7 @@ async function main() {
     where: { email: 'admin@greenroots.co.ke' },
     update: {},
     create: {
-      name: 'GreenRoots Admin',
+      name: 'Mkulima Supply Store Admin',
       email: 'admin@greenroots.co.ke',
       password: hashedPassword,
       role: 'ADMIN',

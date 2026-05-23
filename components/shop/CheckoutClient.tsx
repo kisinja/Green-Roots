@@ -144,7 +144,7 @@ export function CheckoutClient() {
       </div>
 
       <a
-        href={`https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER || '254700000000'}?text=${encodeURIComponent(`Hello GreenRoots! 🌱\n\nI'd like to order:\n${items.map(i => `• ${i.product.name} ×${i.quantity} = ${formatKES(i.product.price * i.quantity)}`).join('\n')}\n\nTotal: ${formatKES(totalAmount)}\n\nDelivery: ${form.address || '—'}\nPhone: ${form.phone || '—'}`)}`}
+        href={`https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER || '254700000000'}?text=${encodeURIComponent(`Hello Mkulima Supply Store! 🌱\n\nI'd like to order:\n${items.map(i => `• ${i.product.name} ×${i.quantity} = ${formatKES(i.product.price * i.quantity)}`).join('\n')}\n\nTotal: ${formatKES(totalAmount)}\n\nDelivery: ${form.address || '—'}\nPhone: ${form.phone || '—'}`)}`}
         target="_blank" rel="noopener"
         className="w-full bg-[#25D366] hover:bg-[#1da851] text-white py-3.5 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-all"
       >

@@ -66,7 +66,7 @@ export function AdminDashboard({ products: initialProducts, orders: initialOrder
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-[#163e16]" style={{fontFamily:'Playfair Display,serif'}}>Admin Panel</h1>
-          <p className="text-gray-500 text-sm mt-1">GreenRoots Agrovet — Dashboard</p>
+          <p className="text-gray-500 text-sm mt-1">Mkulima Supply Store Agrovet — Dashboard</p>
         </div>
         {stats.pendingOrders > 0 && (
           <div className="flex items-center gap-2 bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-2 rounded-xl text-sm font-medium">

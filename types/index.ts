@@ -58,3 +58,11 @@ export interface User {
   phone: string | null
   role: string
 }
+
+export type SlugParamsProps = Promise<{
+  slug: string;
+}>
+
+export type IdParamsProps = Promise<{
+  id: string;
+}>

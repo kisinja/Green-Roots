@@ -5,7 +5,7 @@ import { CartDrawer } from '@/components/shop/CartDrawer'
 import { Toaster } from '@/components/ui/Toaster'
 
 export const metadata: Metadata = {
-  title: 'GreenRoots Agrovet | Quality Farm Inputs Kenya',
+  title: 'Mkulima Supply Store Agrovet | Quality Farm Inputs Kenya',
   description: 'Buy certified seeds, fertilisers, pesticides and veterinary supplies online. Serving Kenya with quality farm inputs. Pay via M-Pesa.',
   keywords: 'agrovet kenya, farm inputs, seeds, fertiliser, pesticides, mpesa, nairobi',
 }
@@ -24,14 +24,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CartDrawer />
         <Toaster />
         <footer className="bg-[#0c260c] text-white/60 py-8 text-center text-sm mt-16">
-          <p className="font-semibold text-white/90 text-base mb-1">GreenRoots Agrovet</p>
+          <p className="font-semibold text-white/90 text-base mb-1">Mkulima Supply Store Agrovet</p>
           <p>📍 Ongata Rongai, Nairobi &nbsp;·&nbsp; 📞 0700 000 000 &nbsp;·&nbsp;
             <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER || '254700000000'}`}
                className="text-green-300 hover:text-green-200" target="_blank" rel="noopener">
               WhatsApp
             </a>
           </p>
-          <p className="text-xs mt-3 opacity-40">© {new Date().getFullYear()} GreenRoots Agrovet. All rights reserved.</p>
+          <p className="text-xs mt-3 opacity-40">© {new Date().getFullYear()} Mkulima Supply Store Agrovet. All rights reserved.</p>
         </footer>
       </body>
     </html>

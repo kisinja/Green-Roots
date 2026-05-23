@@ -144,7 +144,7 @@ export default function NewProductPage() {
           <div className="hidden items-center gap-2 rounded-xl border border-[var(--green-100)] bg-[var(--green-50)] px-4 py-2 md:flex">
             <span className="text-lg">🌿</span>
             <span className="text-sm font-medium text-[var(--green-700)]">
-              GreenRoots Admin
+              Mkulima Supply Store Admin
             </span>
           </div>
         </div>

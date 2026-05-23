@@ -67,7 +67,7 @@ export function Navbar() {
               className="text-white font-semibold text-lg leading-tight"
               style={{ fontFamily: "Playfair Display, serif" }}
             >
-              GreenRoots
+              Mkulima Supply Store
             </div>
 
             <div className="text-green-300 text-[10px] tracking-widest uppercase leading-tight">

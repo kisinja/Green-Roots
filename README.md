@@ -1,4 +1,4 @@
-# 🌱 GreenRoots Agrovet — Full-Stack E-Commerce
+# 🌱 Mkulima Supply Store Agrovet — Full-Stack E-Commerce
 
 A complete Next.js 15 + Prisma + PostgreSQL e-commerce site for a Kenyan agrovet business.
 

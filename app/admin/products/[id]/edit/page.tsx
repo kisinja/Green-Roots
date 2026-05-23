@@ -284,7 +284,7 @@ export default function EditProductPage() {
             <span className="text-lg">🌿</span>
 
             <span className="text-sm font-medium text-[var(--green-700)]">
-              GreenRoots Admin
+              Mkulima Supply Store Admin
             </span>
           </div>
         </div>

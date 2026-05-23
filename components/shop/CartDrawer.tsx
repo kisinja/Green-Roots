@@ -10,7 +10,7 @@ export function CartDrawer() {
 
   const buildWAMessage = () => {
     const lines = items.map(i => `• ${i.product.name} x${i.quantity} = ${formatKES(i.product.price * i.quantity)}`).join('\n')
-    return encodeURIComponent(`Hello GreenRoots! 🌱\n\nI'd like to order:\n${lines}\n\nTotal: ${formatKES(totalAmount)}\n\nPlease confirm & advise on delivery.`)
+    return encodeURIComponent(`Hello Mkulima Supply Store! 🌱\n\nI'd like to order:\n${lines}\n\nTotal: ${formatKES(totalAmount)}\n\nPlease confirm & advise on delivery.`)
   }
 
   return (

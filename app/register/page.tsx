@@ -6,7 +6,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="font-display text-3xl text-[#163e16] mb-1">Create account</h1>
-          <p className="text-gray-500">Join GreenRoots to order farm inputs online</p>
+          <p className="text-gray-500">Join Mkulima Supply Store to order farm inputs online</p>
         </div>
         <AuthForm mode="register" />
         <p className="text-center text-sm text-gray-500 mt-4">

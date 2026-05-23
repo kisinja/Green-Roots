@@ -79,7 +79,7 @@ export async function initiateStkPush({
       PhoneNumber: normalized,
       CallBackURL: process.env.MPESA_CALLBACK_URL,
       AccountReference: `GR-${orderId.slice(-6).toUpperCase()}`,
-      TransactionDesc: 'GreenRoots Agrovet Order',
+      TransactionDesc: 'Mkulima Supply Store Agrovet Order',
     }
 
     console.log({

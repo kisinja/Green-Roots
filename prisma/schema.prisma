@@ -118,3 +118,36 @@ model Review {
   // prevent one user from reviewing the same product multiple times
   @@unique([userId, productId])
 }
+
+
+model BlogPost {
+  id       String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  excerpt String
+  content  String @db.Text
+
+  coverImage String?
+  featured  Boolean  @default(false)
+  published Boolean  @default(false)
+
+  tags String[] @default([])
+
+  seoTitle String?
+  seoDescription String?
+  seoKeywords String[] @default([])
+
+  readTime Int? // in minutes
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // For future expansion, we can add an author relation to the User model if we want to support multiple authors for blog posts. For now, we'll keep it simple without an author field.
+
+  /* 
+  
+    authorId String?
+    author   User?   @relation(fields: [authorId], references: [id])
+   */
+
+}
