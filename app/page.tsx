@@ -5,7 +5,7 @@ import { ProductCard } from '@/components/shop/ProductCard'
 import { CategoryCard } from '@/components/shop/CategoryCard'
 import { generateLocalBusinessJsonLd } from '@/lib/seo'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mkulimasupply.store'
 
 export const metadata: Metadata = {
   title: { absolute: 'Mkulima Supply Store Agrovet | Buy Farm Inputs Online Kenya' },

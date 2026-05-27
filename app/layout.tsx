@@ -4,7 +4,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { CartDrawer } from '@/components/shop/CartDrawer'
 import { Toaster } from '@/components/ui/Toaster'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mkulimasupply.store'
 const SITE_NAME = 'Mkulima Supply Store Agrovet'
 
 export const metadata: Metadata = {

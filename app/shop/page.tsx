@@ -4,7 +4,7 @@ import { ShopClient } from '@/components/shop/ShopClient'
 
 export const dynamic = 'force-dynamic'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mkulimasupply.store'
 
 export const metadata: Metadata = {
   title: { absolute: 'Shop Farm Inputs Online | Seeds, Fertilisers & Pesticides Kenya' },

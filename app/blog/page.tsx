@@ -4,7 +4,7 @@ import { getPublishedPosts, getFeaturedPosts } from '@/lib/blog';
 import BlogHero from '@/components/blog/BlogHero';
 import BlogGrid from '@/components/blog/BlogGrid';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mkulimasupply.store'
 
 export const metadata: Metadata = {
   title: { absolute: 'Farming Tips & Agricultural Guides | Mkulima Supply Store Blog' },
