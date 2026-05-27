@@ -1,7 +1,22 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { CategoryCard } from '@/components/shop/CategoryCard'
+import { generateLocalBusinessJsonLd } from '@/lib/seo'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store'
+
+export const metadata: Metadata = {
+  title: 'Mkulima Supply Store Agrovet | Buy Farm Inputs Online Kenya',
+  description:
+    'Buy certified seeds, fertilisers, pesticides & vet supplies online in Kenya. KEPHIS approved. Serving Nairobi, Ongata Rongai & countrywide. Pay via M-Pesa. Call +254 746 403931.',
+  alternates: { canonical: SITE_URL },
+  openGraph: {
+    url: SITE_URL,
+    type: 'website',
+  },
+}
 
 async function getFeaturedProducts() {
   return prisma.product.findMany({
@@ -21,13 +36,25 @@ async function getCategories() {
 export default async function HomePage() {
   const [featured, categories] = await Promise.all([getFeaturedProducts(), getCategories()])
 
+  const localBusinessJsonLd = generateLocalBusinessJsonLd()
+
   return (
     <>
+      {/* Local Business structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+      />
+
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#163e16] via-[#1f5e1f] to-[#2a5e2a] py-20 px-4 text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-rule='evenodd'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/svg%3E\")" }}>
-        </div>
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-rule='evenodd'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/svg%3E\")",
+          }}
+        />
         <div className="relative max-w-3xl mx-auto">
           <div className="inline-block bg-white/10 border border-white/20 text-green-200 text-xs font-semibold tracking-widest uppercase px-4 py-2 rounded-full mb-6">
             🌱 Nairobi's Trusted Agrovet
@@ -37,16 +64,21 @@ export default async function HomePage() {
             <em className="text-green-200">Grow stronger.</em>
           </h1>
           <p className="text-white/70 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-            Certified seeds, fertilisers, pesticides & vet supplies. Delivered across Kenya. Pay via M-Pesa.
+            Certified seeds, fertilisers, pesticides &amp; vet supplies. Delivered across Kenya. Pay via M-Pesa.
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/shop"
-              className="bg-green-500 hover:bg-green-400 text-white px-7 py-3.5 rounded-xl font-semibold transition-all hover:-translate-y-0.5 shadow-lg">
+            <Link
+              href="/shop"
+              className="bg-green-500 hover:bg-green-400 text-white px-7 py-3.5 rounded-xl font-semibold transition-all hover:-translate-y-0.5 shadow-lg"
+            >
               Shop Now →
             </Link>
-            <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER || '254700000000'}`}
-              target="_blank" rel="noopener"
-              className="border border-white/30 hover:border-white text-white px-7 py-3.5 rounded-xl font-semibold transition-all hover:bg-white/10">
+            <a
+              href={`https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER || '254700000000'}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border border-white/30 hover:border-white text-white px-7 py-3.5 rounded-xl font-semibold transition-all hover:bg-white/10"
+            >
               WhatsApp Us
             </a>
           </div>
@@ -63,7 +95,8 @@ export default async function HomePage() {
             { icon: '💬', text: 'WhatsApp support' },
           ].map(({ icon, text }) => (
             <div key={text} className="flex items-center gap-2 text-sm text-gray-500 font-medium">
-              <span>{icon}</span><span>{text}</span>
+              <span>{icon}</span>
+              <span>{text}</span>
             </div>
           ))}
         </div>
