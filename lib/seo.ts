@@ -23,8 +23,8 @@ export function generateBlogMetadata(post: any): Metadata {
       siteName: SITE_NAME,
       locale: 'en_KE',
       type: 'article',
-      publishedTime: post.createdAt,
-      modifiedTime: post.updatedAt,
+      publishedTime: new Date(post.createdAt).toISOString(),
+      modifiedTime: new Date(post.updatedAt).toISOString(),
       images: [{ url: image, width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
@@ -43,8 +43,8 @@ export function generateBlogJsonLd(post: any) {
     headline: post.title,
     description: post.seoDescription || post.excerpt,
     image: post.coverImage,
-    datePublished: post.createdAt,
-    dateModified: post.updatedAt,
+    datePublished: new Date(post.createdAt).toISOString(),
+    dateModified: new Date(post.updatedAt).toISOString(),
     author: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
     publisher: {
       "@type": "Organization",

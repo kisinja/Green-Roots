@@ -21,9 +21,15 @@ import BackBtn from "@/components/ui/BackBtn";
 import AddToCartBtn from "@/components/ui/AddToCartBtn";
 import ProductReviews from "@/components/reviews/product-reviews";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store'
+
 export async function generateStaticParams() {
-  const products = await prisma.product.findMany({ select: { slug: true } })
-  return products.map((p) => ({ slug: p.slug }))
+  try {
+    const products = await prisma.product.findMany({ select: { slug: true } })
+    return products.map((p) => ({ slug: p.slug }))
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({
@@ -64,10 +70,10 @@ export default async function ProductDetailsPage({
 
   const productJsonLd = generateProductJsonLd(product)
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
-    { name: 'Home', url: process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store' },
-    { name: 'Shop', url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store'}/shop` },
-    { name: product.category.name, url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store'}/shop?category=${product.category.slug}` },
-    { name: product.name, url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store'}/product/${product.slug}` },
+    { name: 'Home', url: SITE_URL },
+    { name: 'Shop', url: `${SITE_URL}/shop` },
+    { name: product.category.name, url: `${SITE_URL}/shop?category=${product.category.slug}` },
+    { name: product.name, url: `${SITE_URL}/product/${product.slug}` },
   ])
 
   return (
