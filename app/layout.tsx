@@ -103,7 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </a>{' '}
             &nbsp;·&nbsp;
             <a
-              href={`https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER || '254700000000'}`}
+              href="https://wa.me/254746403931"
               className="text-green-300 hover:text-green-200"
               target="_blank"
               rel="noopener noreferrer"

@@ -106,8 +106,8 @@ export default async function HomePage() {
       <section className="max-w-6xl mx-auto px-4 py-12">
         <h2 className="font-display text-2xl text-[#163e16] mb-6">Shop by Category</h2>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
-          {categories.map((cat) => (
-            <CategoryCard key={cat.id} category={cat} />
+          {categories.map((cat: never) => (
+            <CategoryCard key={(cat as {id: string}).id} category={cat} />
           ))}
         </div>
       </section>
@@ -121,8 +121,8 @@ export default async function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {featured.map((p) => (
-            <ProductCard key={p.id} product={p as never} />
+          {featured.map((p: never) => (
+            <ProductCard key={(p as {id: string}).id} product={p as never} />
           ))}
         </div>
       </section>

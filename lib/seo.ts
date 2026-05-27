@@ -182,7 +182,7 @@ export function generateLocalBusinessJsonLd() {
       },
     ],
     sameAs: [
-      `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER || '254700000000'}`,
+      'https://wa.me/254746403931',
     ],
     priceRange: "KES",
     currenciesAccepted: "KES",
