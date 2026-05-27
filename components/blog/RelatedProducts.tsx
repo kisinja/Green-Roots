@@ -1,46 +1,53 @@
 // components/blog/RelatedProducts.tsx
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from "next/image";
+import Link from "next/link";
+import { ProductCard } from "../shop/ProductCard";
 
 interface RelatedProductsProps {
   tags?: string[]; // Will be used to match products later
 }
 
-export default async function RelatedProducts({ tags = [] }: RelatedProductsProps) {
-  // Fetch products that match blog tags (simple version)
-  // You can enhance this query later
-  const products = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/products?limit=4`, {
-    next: { revalidate: 3600 }
-  }).then(res => res.json());
+export default async function RelatedProducts({
+  tags = [],
+}: RelatedProductsProps) {
+  // Build dynamic query based on tags
+  let products = [];
+
+  try {
+    const searchParams = new URLSearchParams();
+    searchParams.set("limit", "4");
+
+    // Add tag filters to the query for better matching
+    if (tags.length > 0) {
+      searchParams.set("tags", tags.join(","));
+    }
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/products?${searchParams}`,
+      { next: { revalidate: 3600 } },
+    );
+
+    const data = await res.json();
+    products = data.products || data || [];
+  } catch (e) {
+    console.error("Error fetching related products:", e);
+  }
 
   if (!products?.length) return null;
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-20">
-      <h2 className="text-4xl font-playfair text-green-900 mb-4">Recommended for You</h2>
-      <p className="text-green-600 mb-10">Products that complement this article</p>
+    <section className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
+      <h2 className="text-4xl font-playfair text-green-900 mb-3">
+        Products Related to This Article
+      </h2>
+      <p className="text-green-600 mb-10 max-w-2xl">
+        Shop items that complement the farming techniques and recommendations in
+        this guide
+      </p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {products.slice(0, 4).map((product: any) => (
-          <Link
-            key={product.id}
-            href={`/products/${product.slug}`}
-            className="group bg-white rounded-3xl overflow-hidden border border-green-100 hover:border-green-300 transition-all hover:shadow-xl"
-          >
-            <div className="relative h-52">
-              <Image
-                src={product.images[0] || '/placeholder-product.jpg'}
-                alt={product.name}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform"
-              />
-            </div>
-            <div className="p-6">
-              <div className="text-sm text-earth-500 mb-1">{product.category?.name}</div>
-              <h4 className="font-medium text-green-900 line-clamp-2 mb-2">{product.name}</h4>
-              <div className="text-green-700 font-semibold">KSh {product.price}</div>
-            </div>
-          </Link>
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </section>

@@ -94,7 +94,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         </div>
 
         {/* Related Products */}
-        <RelatedProducts />
+        <RelatedProducts
+          tags={post.tags}
+        />
 
         {/* Share Buttons - Sticky on mobile */}
         <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-40 lg:hidden">

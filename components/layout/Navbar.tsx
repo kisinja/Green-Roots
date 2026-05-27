@@ -9,7 +9,7 @@ import {
   User,
   LogOut,
   Package,
-  Newspaper,         
+  Newspaper,
 } from "lucide-react";
 
 import { useCart } from "@/store/cart";
@@ -77,8 +77,9 @@ export function Navbar() {
           </div>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1">
-          <Link
+        <nav className="hidden md:flex items-center gap-12">
+          <div className="flex gap-1">
+            <Link
             href="/"
             className="text-white/75 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium transition-all"
           >
@@ -92,15 +93,6 @@ export function Navbar() {
             Shop
           </Link>
 
-          {/* New Blog Link */}
-          <Link
-            href="/blog"
-            className="text-white/75 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium transition-all flex items-center gap-1.5"
-          >
-            <Newspaper size={18} />
-            Blog
-          </Link>
-
           {user?.role === "ADMIN" && (
             <Link
               href="/admin"
@@ -109,6 +101,16 @@ export function Navbar() {
               Admin
             </Link>
           )}
+          </div>
+
+          {/* New Blog Link */}
+          <Link
+            href="/blog"
+            className="text-white/75 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium transition-all flex items-center gap-1.5"
+          >
+            <Newspaper size={18} />
+            Read Articles
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">
