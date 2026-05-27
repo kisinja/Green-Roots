@@ -7,7 +7,7 @@ import BlogGrid from '@/components/blog/BlogGrid';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store'
 
 export const metadata: Metadata = {
-  title: 'Farming Tips & Agricultural Guides | Mkulima Supply Store Blog',
+  title: { absolute: 'Farming Tips & Agricultural Guides | Mkulima Supply Store Blog' },
   description:
     'Expert articles on crop management, soil health, pest control, seed selection, and modern farming techniques in Kenya. Practical advice from certified agronomists.',
   keywords: [

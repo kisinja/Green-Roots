@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import { CheckoutClient } from '@/components/shop/CheckoutClient'
+
+export const metadata: Metadata = {
+  title: 'Checkout | Mkulima Supply Store',
+  robots: { index: false, follow: false },
+}
 
 export default function CheckoutPage() {
   return (

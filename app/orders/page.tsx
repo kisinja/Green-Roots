@@ -1,9 +1,15 @@
+import type { Metadata } from 'next'
 import { requireAuth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import { formatKES } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
+
+export const metadata: Metadata = {
+  title: 'My Orders | Mkulima Supply Store',
+  robots: { index: false, follow: false },
+}
 
 const STATUS_COLORS: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-800',

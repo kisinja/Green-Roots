@@ -8,7 +8,7 @@ import { generateLocalBusinessJsonLd } from '@/lib/seo'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store'
 
 export const metadata: Metadata = {
-  title: 'Mkulima Supply Store Agrovet | Buy Farm Inputs Online Kenya',
+  title: { absolute: 'Mkulima Supply Store Agrovet | Buy Farm Inputs Online Kenya' },
   description:
     'Buy certified seeds, fertilisers, pesticides & vet supplies online in Kenya. KEPHIS approved. Serving Nairobi, Ongata Rongai & countrywide. Pay via M-Pesa. Call +254 746 403931.',
   alternates: { canonical: SITE_URL },
@@ -74,7 +74,7 @@ export default async function HomePage() {
               Shop Now →
             </Link>
             <a
-              href={`https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER || '254700000000'}`}
+              href="https://wa.me/254746403931"
               target="_blank"
               rel="noopener noreferrer"
               className="border border-white/30 hover:border-white text-white px-7 py-3.5 rounded-xl font-semibold transition-all hover:bg-white/10"

@@ -7,17 +7,17 @@ export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mkulimasupp
 // ─── Blog ─────────────────────────────────────────────────────────────────────
 
 export function generateBlogMetadata(post: any): Metadata {
-  const title = post.seoTitle || `${post.title} | ${SITE_NAME}`;
-  const description = post.seoDescription || post.excerpt;
+  const titleStr = post.seoTitle || `${post.title} | ${SITE_NAME}`;
+  const description = post.seoDescription || post.excerpt || `Read ${post.title} on the Mkulima Supply Store farming blog.`;
   const url = `${SITE_URL}/blog/${post.slug}`;
   const image = post.coverImage || `${SITE_URL}/og-default.jpg`;
 
   return {
-    title,
+    title: { absolute: titleStr },
     description,
     alternates: { canonical: url },
     openGraph: {
-      title,
+      title: titleStr,
       description,
       url,
       siteName: SITE_NAME,
@@ -29,7 +29,7 @@ export function generateBlogMetadata(post: any): Metadata {
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: titleStr,
       description,
       images: [image],
     },
@@ -59,7 +59,7 @@ export function generateBlogJsonLd(post: any) {
 // ─── Product ──────────────────────────────────────────────────────────────────
 
 export function generateProductMetadata(product: any): Metadata {
-  const title = `${product.name} | Buy Online – ${SITE_NAME}`;
+  const titleStr = `${product.name} | Buy Online – ${SITE_NAME}`;
   const description =
     product.description
       ? `${product.description.slice(0, 155).trim()}…`
@@ -69,7 +69,7 @@ export function generateProductMetadata(product: any): Metadata {
   const categoryName = product.category?.name || 'Farm Inputs';
 
   return {
-    title,
+    title: { absolute: titleStr },
     description,
     keywords: [
       product.name,
@@ -83,7 +83,7 @@ export function generateProductMetadata(product: any): Metadata {
     ].join(', '),
     alternates: { canonical: url },
     openGraph: {
-      title,
+      title: titleStr,
       description,
       url,
       siteName: SITE_NAME,
@@ -93,7 +93,7 @@ export function generateProductMetadata(product: any): Metadata {
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: titleStr,
       description,
       images: [image],
     },
@@ -116,7 +116,7 @@ export function generateProductJsonLd(product: any) {
       "@type": "Offer",
       url,
       priceCurrency: "KES",
-      price: product.price,
+      price: String(product.price),
       availability:
         product.stock > 0
           ? "https://schema.org/InStock"

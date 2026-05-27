@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store'
 
 export const metadata: Metadata = {
-  title: 'Shop Farm Inputs Online | Seeds, Fertilisers & Pesticides Kenya',
+  title: { absolute: 'Shop Farm Inputs Online | Seeds, Fertilisers & Pesticides Kenya' },
   description:
     'Browse and buy certified seeds, fertilisers, pesticides, herbicides and veterinary supplies online in Kenya. Genuine agrovet products. Pay via M-Pesa. Fast countrywide delivery.',
   keywords: [

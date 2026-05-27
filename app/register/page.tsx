@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import { AuthForm } from '@/components/ui/AuthForm'
+
+export const metadata: Metadata = {
+  title: 'Create Account | Mkulima Supply Store',
+  robots: { index: false, follow: false },
+}
 
 export default function RegisterPage() {
   return (

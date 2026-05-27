@@ -17,11 +17,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     // Products
     const products = await prisma.product.findMany({
-      select: { slug: true, updatedAt: true },
+      select: { slug: true, createdAt: true },
     })
-    productPages = products.map((p: { slug: string; updatedAt: Date }) => ({
+    productPages = products.map((p) => ({
       url: `${SITE_URL}/product/${p.slug}`,
-      lastModified: p.updatedAt,
+      lastModified: p.createdAt,
       changeFrequency: 'weekly' as const,
       priority: 0.85,
     }))
@@ -31,7 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       where: { published: true },
       select: { slug: true, updatedAt: true },
     })
-    blogPages = posts.map((post: { slug: string; updatedAt: Date }) => ({
+    blogPages = posts.map((post) => ({
       url: `${SITE_URL}/blog/${post.slug}`,
       lastModified: post.updatedAt,
       changeFrequency: 'monthly' as const,
