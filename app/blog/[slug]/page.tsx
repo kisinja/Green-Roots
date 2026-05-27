@@ -84,7 +84,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <div className="flex gap-12">
               {/* Main Content */}
               <div className="flex-1">
-                <MarkdownRenderer content={post.content} />
+                {/* <MarkdownRenderer content={post.content} /> */}
+                <div
+                  dangerouslySetInnerHTML={{ __html: post.content as string }}
+                />
               </div>
 
               {/* Sidebar TOC */}
