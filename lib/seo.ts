@@ -111,7 +111,7 @@ export function generateProductJsonLd(product: any) {
     description: product.description,
     image: product.images?.length > 0 ? product.images : [image],
     sku: `AGR-${product.id.slice(0, 6).toUpperCase()}`,
-    brand: { "@type": "Organization", name: SITE_NAME },
+    brand: { "@type": "Brand", name: SITE_NAME },
     offers: {
       "@type": "Offer",
       url,
@@ -122,6 +122,41 @@ export function generateProductJsonLd(product: any) {
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
       seller: { "@type": "Organization", name: SITE_NAME },
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: "0",
+          currency: "KES",
+        },
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "KE",
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: 0,
+            maxValue: 1,
+            unitCode: "DAY",
+          },
+          transitTime: {
+            "@type": "QuantitativeValue",
+            minValue: 1,
+            maxValue: 3,
+            unitCode: "DAY",
+          },
+        },
+      },
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "KE",
+        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+        merchantReturnDays: 7,
+        returnMethod: "https://schema.org/ReturnByMail",
+        returnFees: "https://schema.org/FreeReturn",
+      },
     },
     ...(product.reviewCount > 0 && {
       aggregateRating: {
