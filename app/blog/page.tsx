@@ -9,7 +9,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mkulimasupply.
 export const metadata: Metadata = {
   title: { absolute: 'Farming Tips & Agricultural Guides | Mkulima Supply Store Blog' },
   description:
-    'Expert articles on crop management, soil health, pest control, seed selection, and modern farming techniques in Kenya. Practical advice from certified agronomists.',
+    'Expert articles on crop management, soil health, pest control, and seed selection for Kenyan farmers. Practical advice from certified agronomists.',
   keywords: [
     'farming tips Kenya',
     'crop management Kenya',

@@ -9,7 +9,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mkulimasupply.
 export const metadata: Metadata = {
   title: { absolute: 'Shop Farm Inputs Online | Seeds, Fertilisers & Pesticides Kenya' },
   description:
-    'Browse and buy certified seeds, fertilisers, pesticides, herbicides and veterinary supplies online in Kenya. Genuine agrovet products. Pay via M-Pesa. Fast countrywide delivery.',
+    'Buy certified seeds, fertilisers, pesticides & vet supplies online in Kenya. Genuine agrovet products. KEPHIS approved. Pay via M-Pesa.',
   keywords: [
     'buy farm inputs online Kenya',
     'seeds Kenya online',
