@@ -8,7 +8,8 @@ export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.mkulima
 
 export function generateBlogMetadata(post: any): Metadata {
   const titleStr = post.seoTitle || `${post.title} | ${SITE_NAME}`;
-  const description = post.seoDescription || post.excerpt || `Read ${post.title} on the Mkulima Supply Store farming blog.`;
+  const rawDesc = post.seoDescription || post.excerpt || `Read ${post.title} on the Mkulima Supply Store farming blog.`;
+  const description = rawDesc.length > 155 ? `${rawDesc.slice(0, 152).trim()}…` : rawDesc;
   const url = `${SITE_URL}/blog/${post.slug}`;
   const image = post.coverImage || `${SITE_URL}/og-default.jpg`;
 
@@ -59,11 +60,12 @@ export function generateBlogJsonLd(post: any) {
 // ─── Product ──────────────────────────────────────────────────────────────────
 
 export function generateProductMetadata(product: any): Metadata {
-  const titleStr = `${product.name} | Buy Online – ${SITE_NAME}`;
+  const titleStr = `${product.name.slice(0, 40).trim()} | Buy Online Kenya – ${SITE_NAME}`;
+  const fallbackDesc = `Buy ${product.name} online in Kenya. KEPHIS approved. Pay via M-Pesa. Fast countrywide delivery.`;
   const description =
     product.description
-      ? `${product.description.slice(0, 155).trim()}…`
-      : `Buy ${product.name} online in Kenya. Genuine agrovet-approved product. Pay via M-Pesa. Fast delivery countrywide.`;
+      ? `${product.description.slice(0, 148).trim()}…`
+      : fallbackDesc.slice(0, 155);
   const url = `${SITE_URL}/product/${product.slug}`;
   const image = product.images?.[0] || `${SITE_URL}/og-default.jpg`;
   const categoryName = product.category?.name || 'Farm Inputs';
