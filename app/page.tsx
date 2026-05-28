@@ -10,7 +10,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mkulimasupply.
 export const metadata: Metadata = {
   title: { absolute: 'Mkulima Supply Store Agrovet | Buy Farm Inputs Online Kenya' },
   description:
-    'Buy certified seeds, fertilisers, pesticides & vet supplies online in Kenya. KEPHIS approved. Serving Nairobi, Ongata Rongai & countrywide. Pay via M-Pesa. Call +254 746 403931.',
+    'Buy certified seeds, fertilisers, pesticides & vet supplies online in Kenya. KEPHIS approved. Countrywide delivery. Pay via M-Pesa.',
   alternates: { canonical: SITE_URL },
   openGraph: {
     url: SITE_URL,
