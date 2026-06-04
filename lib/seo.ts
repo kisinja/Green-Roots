@@ -2,7 +2,7 @@
 import { Metadata } from 'next';
 
 export const SITE_NAME = "Mkulima Supply Store Agrovet";
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.mkulimasupply.store";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mkulimasupply.store";
 
 // ─── Blog ─────────────────────────────────────────────────────────────────────
 
