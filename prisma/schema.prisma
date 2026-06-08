@@ -33,36 +33,36 @@ model Category {
 }
 
 model Product {
-  id          String      @id @default(cuid())
-  name        String
-  slug        String      @unique
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
 
-  description String
+  description     String
   longDescription String?
 
-  price       Float
-  stock       Int         @default(0)
+  price Float
+  stock Int   @default(0)
 
-  images String[]    @default([])
+  images String[] @default([])
 
-  emoji       String
-  badge       String?
+  emoji String
+  badge String?
 
-  featured    Boolean     @default(false)
+  featured Boolean @default(false)
 
-  features   String[]    @default([])
+  features       String[] @default([])
   specifications Json?
 
-  categoryId  String
-  category    Category    @relation(fields: [categoryId], references: [id])
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
 
-  createdAt   DateTime    @default(now())
-  
-  orderItems  OrderItem[]
-  reviews     Review[]
+  createdAt DateTime @default(now())
 
-  averageRating Float     @default(0)
-  reviewCount  Int       @default(0)
+  orderItems OrderItem[]
+  reviews    Review[]
+
+  averageRating Float @default(0)
+  reviewCount   Int   @default(0)
 }
 
 model Order {
@@ -76,6 +76,9 @@ model Order {
   mpesaRef    String?
   waMessage   Boolean     @default(false)
   items       OrderItem[]
+
+  payment Payment?
+
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
@@ -119,23 +122,47 @@ model Review {
   @@unique([userId, productId])
 }
 
+model Payment {
+  id          String   @id @default(cuid())
+
+  orderId     String @unique
+  order       Order    @relation(fields: [orderId], references: [id])
+
+  provider    String
+  status      PaymentStatus @default(PENDING)
+
+  amount      Float
+  currency    String @default("KES")
+
+  phone       String?
+  providerRef String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
 
 model BlogPost {
-  id       String   @id @default(cuid())
-  title     String
-  slug      String   @unique
+  id      String @id @default(cuid())
+  title   String
+  slug    String @unique
   excerpt String
-  content  String @db.Text
+  content String @db.Text
 
   coverImage String?
-  featured  Boolean  @default(false)
-  published Boolean  @default(false)
+  featured   Boolean @default(false)
+  published  Boolean @default(false)
 
   tags String[] @default([])
 
-  seoTitle String?
+  seoTitle       String?
   seoDescription String?
-  seoKeywords String[] @default([])
+  seoKeywords    String[] @default([])
 
   readTime Int? // in minutes
 
@@ -144,10 +171,60 @@ model BlogPost {
 
   // For future expansion, we can add an author relation to the User model if we want to support multiple authors for blog posts. For now, we'll keep it simple without an author field.
 
-  /* 
-  
-    authorId String?
-    author   User?   @relation(fields: [authorId], references: [id])
+  /**
+   * authorId String?
+   * author   User?   @relation(fields: [authorId], references: [id])
    */
+}
 
+model CropGuide {
+  id String @id @default(cuid())
+
+  cropName  String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([cropName])
+}
+
+model DiseaseGuide {
+  id String @id @default(cuid())
+
+  diseaseName String
+  symptoms    String @db.Text
+  treatment   String @db.Text
+  prevention  String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([diseaseName])
+}
+
+model AIConversation {
+  id String @id @default(cuid())
+
+  userId String?
+  title  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages AIMessage[]
+}
+
+model AIMessage {
+  id String @id @default(cuid())
+
+  conversationId String
+
+  role String
+
+  content String @db.Text
+
+  createdAt    DateTime       @default(now())
+  conversation AIConversation @relation(fields: [conversationId], references: [id])
+
+  @@index([conversationId])
 }

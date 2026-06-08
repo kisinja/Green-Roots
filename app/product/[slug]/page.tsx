@@ -21,7 +21,7 @@ import BackBtn from "@/components/ui/BackBtn";
 import AddToCartBtn from "@/components/ui/AddToCartBtn";
 import ProductReviews from "@/components/reviews/product-reviews";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mkulimasupply.store'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mkulimasupply.store'
 
 export async function generateStaticParams() {
   try {
