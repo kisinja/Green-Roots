@@ -1,60 +1,39 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { initiateStkPush } from '@/lib/mpesa'
-import { prisma } from '@/lib/prisma'
-import { requireAuth } from '@/lib/auth'
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { sendStkPush } from "@/lib/intasend";
 
 export async function POST(req: NextRequest) {
   try {
-    await requireAuth()
+    const { orderId } = await req.json();
 
-    const { orderId, phone, amount } = await req.json()
-
-    if (!orderId || !phone || !amount) {
-      return NextResponse.json(
-        { error: 'Missing fields' },
-        { status: 400 }
-      )
-    }
-
-    const result = await initiateStkPush({
-      phone,
-      amount,
-      orderId,
-    })
-
-    // STK failed
-    if (!result.success || !result.checkoutRequestId) {
-      return NextResponse.json(
-        {
-          error: result.error || 'STK push failed',
-        },
-        { status: 400 }
-      )
-    }
-
-    // Save CheckoutRequestID temporarily
-    await prisma.order.update({
+    const order = await prisma.order.findUnique({
       where: { id: orderId },
-      data: {
-        mpesaRef: result.checkoutRequestId,
+      include: {
+        user: true,
       },
-    })
+    });
 
-    return NextResponse.json({
-      success: true,
-      checkoutRequestId: result.checkoutRequestId,
-    })
-  } catch (err) {
-    console.error('STK Route Error:', err)
+    if (!order) {
+      return NextResponse.json(
+        { error: "Order not found" },
+        { status: 404 }
+      );
+    }
+
+    const result = await sendStkPush({
+      orderId: order.id,
+      amount: order.totalAmount,
+      phone: order.phone,
+      email: order.user.email,
+    });
+
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error(error);
 
     return NextResponse.json(
-      {
-        error:
-          err instanceof Error
-            ? err.message
-            : 'Server error',
-      },
+      { error: "Failed to initiate payment" },
       { status: 500 }
-    )
+    );
   }
 }

@@ -5,7 +5,7 @@ import { requireAuth } from '@/lib/auth'
 export async function POST(req: NextRequest) {
   try {
     const session = await requireAuth()
-    const { items, phone, address, totalAmount } = await req.json()
+    const { items, phone, address, totalAmount,name } = await req.json()
 
     if (!items?.length || !phone || !address) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
       data: {
         userId: session.userId,
         phone,
+        name,
         address,
         totalAmount,
         items: {
@@ -26,6 +27,15 @@ export async function POST(req: NextRequest) {
         },
       },
       include: { items: { include: { product: true } } },
+    });
+
+    await prisma.payment.create({
+      data:{
+        orderId:order.id,
+        provider:"INTASEND",
+        amount:totalAmount,
+        phone,
+      }
     })
 
     return NextResponse.json({ order }, { status: 201 })
