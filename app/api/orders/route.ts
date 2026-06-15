@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
         provider:"INTASEND",
         amount:totalAmount,
         phone,
+        name,
       }
     })
 
