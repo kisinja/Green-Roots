@@ -137,6 +137,7 @@ model Payment {
 
   phone       String?
   providerRef String?
+  name String?
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
