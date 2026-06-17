@@ -1,25 +1,39 @@
-import type { Metadata } from 'next'
-import { AuthForm } from '@/components/ui/AuthForm'
+import type { Metadata } from "next";
+import { AuthForm } from "@/components/ui/AuthForm";
 
 export const metadata: Metadata = {
-  title: 'Create Account | Mkulima Supply Store',
+  title: "Create Account | Mkulima Supply Store",
   robots: { index: false, follow: false },
-}
+};
 
 export default function RegisterPage() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="font-display text-3xl text-[#163e16] mb-1">Create account</h1>
-          <p className="text-gray-500">Join Mkulima Supply Store to order farm inputs online</p>
+          <h1 className="font-display text-3xl text-[#163e16] mb-1">
+            Create account
+          </h1>
+
+          <p className="text-gray-500">
+            Join Mkulima Supply Store to order farm inputs online
+          </p>
+
+          <div className="mt-4 rounded-xl bg-blue-50 border border-blue-200 p-3 text-sm text-blue-800">
+            Your phone number will automatically become your login password.
+          </div>
         </div>
         <AuthForm mode="register" />
         <p className="text-center text-sm text-gray-500 mt-4">
-          Already have an account?{' '}
-          <a href="/login" className="text-green-700 font-semibold hover:underline">Sign in</a>
+          Already have an account?{" "}
+          <a
+            href="/login"
+            className="text-green-700 font-semibold hover:underline"
+          >
+            Sign in
+          </a>
         </p>
       </div>
     </div>
-  )
+  );
 }
