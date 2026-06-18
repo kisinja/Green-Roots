@@ -93,12 +93,19 @@ export default function ProductsPage() {
             Manage your agrovet inventory
           </p>
         </div>
-        <Link
-          href="/admin/products/new"
-          className="flex items-center gap-1.5 px-4 py-2 bg-[var(--green-600)] hover:bg-[var(--green-700)] text-white text-sm font-medium rounded-lg transition-colors"
-        >
-          + Add product
-        </Link>
+        <div className="flex flex-col md:flex-row gap-2">
+          <Link
+            href="/admin/products/new"
+            className="flex items-center gap-1.5 px-4 py-2 bg-[var(--green-600)] hover:bg-[var(--green-700)] text-white text-sm font-medium rounded-lg transition-colors w-max"
+          >
+            + Add product
+          </Link>
+          <button className="inline-flex items-center px-6 py-3 border-2 border-green-600 hover:bg-green-600 text-green-700 hover:text-white font-medium rounded-xl transition-all duration-200">
+            <a href="/api/admin/products/template" className="no-underline">
+              Download Excel Template
+            </a>
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
