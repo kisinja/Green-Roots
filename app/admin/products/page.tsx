@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { showToast } from "@/components/ui/Toaster";
+import {useRouter} from 'next/navigation';
 
 interface Category {
   id: string;
@@ -27,6 +28,9 @@ export default function ProductsPage() {
   const [catFilter, setCatFilter] = useState("");
   const [stockFilter, setStockFilter] = useState("");
   const [page, setPage] = useState(1);
+
+   const router = useRouter();
+
   const PER_PAGE = 10;
 
   useEffect(() => {
@@ -77,8 +81,7 @@ export default function ProductsPage() {
     // Optional: await response.json() if you want to use the success data
     showToast("Product deleted successfully!", "success");
     
-    // You probably want to refresh your product list here
-    // e.g. mutate() if using SWR, or router.refresh() in Next.js App Router
+    router.refresh();
   } catch (error) {
     const message = error instanceof Error ? error.message : "Something went wrong";
     showToast(message, "error");

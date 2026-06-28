@@ -17,7 +17,7 @@ const AdminImportProductsPage = () => {
   const [result, setResult] = useState<ImportResult | null>(null);
 
   const handleImport = async () => {
-    if (!excelFile || !zipFile) {
+    if (!excelFile) {
       showToast("Please select both Excel and ZIP files.", "error");
       return;
     }
@@ -27,8 +27,8 @@ const AdminImportProductsPage = () => {
       setResult(null);
 
       const formData = new FormData();
-      formData.append("excel", excelFile);
-      formData.append("images", zipFile);
+      excelFile && formData.append("excel", excelFile);
+      zipFile && formData.append("images", zipFile);
 
       const response = await fetch("/api/admin/products/bulk-import", {
         method: "POST",

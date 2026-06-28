@@ -61,6 +61,8 @@ model Product {
   orderItems OrderItem[]
   reviews    Review[]
 
+  isActive Boolean @default(true)
+
   averageRating Float @default(0)
   reviewCount   Int   @default(0)
 }

@@ -7,6 +7,7 @@ export async function GET() {
   try {
     await requireAdmin()
     const products = await prisma.product.findMany({
+      where: { isActive: true },
       include: { category: true },
       orderBy: { createdAt: 'desc' },
     })
@@ -44,11 +45,11 @@ export async function POST(req: NextRequest) {
       Array.isArray(features)
         ? features
         : typeof features === "string"
-        ? features
+          ? features
             .split("\n")
             .map((f: string) => f.trim())
             .filter(Boolean)
-        : [];
+          : [];
 
     const parsedSpecifications =
       typeof specifications === "object"
