@@ -13,7 +13,7 @@ const AdminImportProductsPage = () => {
   const [excelFile, setExcelFile] = useState<File | null>(null);
   const [zipFile, setZipFile] = useState<File | null>(null);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ImportResult | null>(null);
 
   const handleImport = async () => {
