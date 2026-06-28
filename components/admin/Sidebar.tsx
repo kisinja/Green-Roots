@@ -8,6 +8,7 @@ const links = [
   { name: "Dashboard", href: "/admin", icon: "🏠" },
   { name: "Articles", href: "/admin/blog", icon: "📝" },
   { name: "Products", href: "/admin/products", icon: "📦" },
+  { name: "Import Products", href: "/admin/products/import", icon: "📥" },
   { name: "Orders", href: "/admin/orders", icon: "🛒" },
   { name: "Categories", href: "/admin/categories", icon: "🗂️" },
   { name: "Users", href: "/admin/users", icon: "👥" },
