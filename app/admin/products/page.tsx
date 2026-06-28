@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import { showToast } from "@/components/ui/Toaster";
 
 interface Category {
   id: string;
@@ -61,6 +62,15 @@ export default function ProductsPage() {
 
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const slice = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+
+  const deleteProduct = async (productId: string) => {
+    try {
+      await fetch(`/api/admin/products/${productId}`, {
+        method: "DELETE",
+      });
+      showToast("Product deleted successfully!", "success");
+    } catch (error) {}
+  };
 
   const stats = useMemo(
     () => ({
@@ -256,7 +266,10 @@ export default function ProductsPage() {
                       >
                         ✏️
                       </Link>
-                      <button className="w-8 h-8 flex items-center justify-center rounded-md border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-colors text-sm">
+                      <button
+                        onClick={() => deleteProduct(p.id)}
+                        className="w-8 h-8 flex items-center justify-center rounded-md border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-colors text-sm"
+                      >
                         🗑️
                       </button>
                     </div>
