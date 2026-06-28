@@ -64,14 +64,26 @@ export default function ProductsPage() {
   const slice = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   const deleteProduct = async (productId: string) => {
-    try {
-      await fetch(`/api/admin/products/${productId}`, {
-        method: "DELETE",
-      });
-      showToast("Product deleted successfully!", "success");
-    } catch (error) {}
-  };
+  try {
+    const response = await fetch(`/api/admin/products/${productId}`, {
+      method: "DELETE",
+    });
 
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || "Failed to delete product");
+    }
+
+    // Optional: await response.json() if you want to use the success data
+    showToast("Product deleted successfully!", "success");
+    
+    // You probably want to refresh your product list here
+    // e.g. mutate() if using SWR, or router.refresh() in Next.js App Router
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Something went wrong";
+    showToast(message, "error");
+  }
+};
   const stats = useMemo(
     () => ({
       total: products.length,
