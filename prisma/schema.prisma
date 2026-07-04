@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  //url      = env("DATABASE_URL")
 }
 
 model User {
@@ -19,11 +18,6 @@ model User {
   reviews   Review[]
 }
 
-enum Role {
-  CUSTOMER
-  ADMIN
-}
-
 model Category {
   id       String    @id @default(cuid())
   name     String    @unique
@@ -33,57 +27,152 @@ model Category {
 }
 
 model Product {
-  id   String @id @default(cuid())
-  name String
-  slug String @unique
-
+  id              String      @id @default(cuid())
+  name            String
+  slug            String      @unique
   description     String
+  price           Float
+  stock           Int         @default(0)
+  emoji           String
+  badge           String?
+  featured        Boolean     @default(false)
+  categoryId      String
+  createdAt       DateTime    @default(now())
+  averageRating   Float       @default(0)
+  reviewCount     Int         @default(0)
+  features        String[]    @default([])
   longDescription String?
-
-  price Float
-  stock Int   @default(0)
-
-  images String[] @default([])
-
-  emoji String
-  badge String?
-
-  featured Boolean @default(false)
-
-  features       String[] @default([])
-  specifications Json?
-
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
-
-  createdAt DateTime @default(now())
-
-  orderItems OrderItem[]
-  reviews    Review[]
-
-  isActive Boolean @default(true)
-
-  averageRating Float @default(0)
-  reviewCount   Int   @default(0)
+  specifications  Json?
+  images          String[]    @default([])
+  isActive        Boolean     @default(true)
+  brand           String?
+  imageAlt        String?
+  sku             String?
+  orderItems      OrderItem[]
+  category        Category    @relation(fields: [categoryId], references: [id])
+  reviews         Review[]
 }
 
 model Order {
   id          String      @id @default(cuid())
   userId      String
-  user        User        @relation(fields: [userId], references: [id])
-  name String
   status      OrderStatus @default(PENDING)
   totalAmount Float
   phone       String
   address     String
   mpesaRef    String?
   waMessage   Boolean     @default(false)
-  items       OrderItem[]
-
-  payment Payment?
-
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  name        String
+  user        User        @relation(fields: [userId], references: [id])
+  items       OrderItem[]
+  payment     Payment?
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model Review {
+  id               String   @id @default(cuid())
+  rating           Int
+  comment          String?
+  userId           String
+  productId        String
+  verifiedPurchase Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  product          Product  @relation(fields: [productId], references: [id])
+  user             User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, productId])
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  orderId     String        @unique
+  provider    String
+  status      PaymentStatus @default(PENDING)
+  amount      Float
+  currency    String        @default("KES")
+  phone       String?
+  providerRef String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  name        String?
+  order       Order         @relation(fields: [orderId], references: [id])
+}
+
+model BlogPost {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  excerpt        String
+  content        String
+  coverImage     String?
+  featured       Boolean  @default(false)
+  published      Boolean  @default(false)
+  tags           String[] @default([])
+  seoTitle       String?
+  seoDescription String?
+  seoKeywords    String[] @default([])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  readTime       Int?
+}
+
+model CropGuide {
+  id        String   @id @default(cuid())
+  cropName  String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([cropName])
+}
+
+model DiseaseGuide {
+  id          String   @id @default(cuid())
+  diseaseName String
+  symptoms    String
+  treatment   String
+  prevention  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([diseaseName])
+}
+
+model AIConversation {
+  id        String      @id @default(cuid())
+  userId    String?
+  title     String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  messages  AIMessage[]
+}
+
+model AIMessage {
+  id             String         @id @default(cuid())
+  conversationId String
+  role           String
+  content        String
+  createdAt      DateTime       @default(now())
+  conversation   AIConversation @relation(fields: [conversationId], references: [id])
+
+  @@index([conversationId])
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
 }
 
 enum OrderStatus {
@@ -94,141 +183,8 @@ enum OrderStatus {
   CANCELLED
 }
 
-model OrderItem {
-  id        String  @id @default(cuid())
-  orderId   String
-  order     Order   @relation(fields: [orderId], references: [id])
-  productId String
-  product   Product @relation(fields: [productId], references: [id])
-  quantity  Int
-  price     Float
-}
-
-model Review {
-  id String @id @default(cuid())
-
-  rating  Int // 1-5
-  comment String?
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  productId String
-  product   Product @relation(fields: [productId], references: [id])
-
-  verifiedPurchase Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // prevent one user from reviewing the same product multiple times
-  @@unique([userId, productId])
-}
-
-model Payment {
-  id          String   @id @default(cuid())
-
-  orderId     String @unique
-  order       Order    @relation(fields: [orderId], references: [id])
-
-  provider    String
-  status      PaymentStatus @default(PENDING)
-
-  amount      Float
-  currency    String @default("KES")
-
-  phone       String?
-  providerRef String?
-  name String?
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
 enum PaymentStatus {
   PENDING
   SUCCESS
   FAILED
-}
-
-model BlogPost {
-  id      String @id @default(cuid())
-  title   String
-  slug    String @unique
-  excerpt String
-  content String @db.Text
-
-  coverImage String?
-  featured   Boolean @default(false)
-  published  Boolean @default(false)
-
-  tags String[] @default([])
-
-  seoTitle       String?
-  seoDescription String?
-  seoKeywords    String[] @default([])
-
-  readTime Int? // in minutes
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // For future expansion, we can add an author relation to the User model if we want to support multiple authors for blog posts. For now, we'll keep it simple without an author field.
-
-  /**
-   * authorId String?
-   * author   User?   @relation(fields: [authorId], references: [id])
-   */
-}
-
-model CropGuide {
-  id String @id @default(cuid())
-
-  cropName  String
-  content   String   @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([cropName])
-}
-
-model DiseaseGuide {
-  id String @id @default(cuid())
-
-  diseaseName String
-  symptoms    String @db.Text
-  treatment   String @db.Text
-  prevention  String @db.Text
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([diseaseName])
-}
-
-model AIConversation {
-  id String @id @default(cuid())
-
-  userId String?
-  title  String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  messages AIMessage[]
-}
-
-model AIMessage {
-  id String @id @default(cuid())
-
-  conversationId String
-
-  role String
-
-  content String @db.Text
-
-  createdAt    DateTime       @default(now())
-  conversation AIConversation @relation(fields: [conversationId], references: [id])
-
-  @@index([conversationId])
 }

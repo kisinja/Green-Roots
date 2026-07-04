@@ -4,3 +4,5 @@ node_modules
 .env.example
 .next
 .vscode
+scripts/
+categories-export.csv

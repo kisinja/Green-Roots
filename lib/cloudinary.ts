@@ -29,3 +29,37 @@ export async function uploadToCloudinary(
         streamifier.createReadStream(buffer).pipe(stream);
     });
 }
+
+export async function uploadProductImage(
+  buffer: Buffer,
+  folder = "mkulima-supply-store/products"
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+        transformation: [
+          {
+            width: 1200,
+            height: 1200,
+            crop: "limit",
+          },
+          {
+            quality: "auto",
+            fetch_format: "auto",
+          },
+        ],
+      },
+      (err, result) => {
+        if (err || !result) {
+          reject(err ?? new Error("Upload failed"));
+          return;
+        }
+
+        resolve(result.secure_url);
+      }
+    );
+
+    stream.end(buffer);
+  });
+}
