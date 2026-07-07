@@ -67,9 +67,6 @@ export default function BulkProductUpload() {
 
   return (
     <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-green-100 p-8">
-      <h2 className="text-2xl font-display text-green-800 mb-6">
-        Bulk Product Upload (CSV)
-      </h2>
 
       <div className="space-y-8">
         <div>

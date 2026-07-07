@@ -1,16 +1,20 @@
 // app/blog/[slug]/page.tsx
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import Link from 'next/link';
-import { getPostBySlug } from '@/lib/blog';
-import { generateBlogMetadata, generateBlogJsonLd } from '@/lib/seo';
-import MarkdownRenderer from '@/components/blog/MarkdownRenderer';
-import ReadingProgress from '@/components/blog/ReadingProgress';
-import TableOfContents from '@/components/blog/TableOfContents';
-import RelatedProducts from '@/components/blog/RelatedProducts';
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { getPostBySlug } from "@/lib/blog";
+import { generateBlogMetadata, generateBlogJsonLd } from "@/lib/seo";
+import MarkdownRenderer from "@/components/blog/MarkdownRenderer";
+import ReadingProgress from "@/components/blog/ReadingProgress";
+import TableOfContents from "@/components/blog/TableOfContents";
+import RelatedProducts from "@/components/blog/RelatedProducts";
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const resolvedParams = await params;
   const post = await getPostBySlug(resolvedParams.slug);
   if (!post) return {};
@@ -18,7 +22,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return generateBlogMetadata(post);
 }
 
-export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function BlogPostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const resolvedParams = await params;
   const post = await getPostBySlug(resolvedParams.slug);
 
@@ -54,7 +62,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <div className="bg-white rounded-3xl shadow-xl p-10 md:p-16">
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-2 text-sm text-green-600 mb-8">
-              <Link href="/blog" className="hover:text-green-700">Blog</Link>
+              <Link href="/blog" className="hover:text-green-700">
+                Blog
+              </Link>
               <span>→</span>
               <span className="text-green-800">{post.title}</span>
             </nav>
@@ -65,7 +75,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
             <div className="flex items-center gap-6 text-sm text-green-600 mb-12">
               <time dateTime={post.createdAt.toISOString()}>
-                {new Intl.DateTimeFormat('en-KE', { dateStyle: 'long' }).format(new Date(post.createdAt))}
+                {new Intl.DateTimeFormat("en-KE", { dateStyle: "long" }).format(
+                  new Date(post.createdAt),
+                )}
               </time>
               {post.readTime && <span>• {post.readTime} min read</span>}
             </div>
@@ -74,7 +86,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             {post.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-12">
                 {post.tags.map((tag) => (
-                  <span key={tag} className="px-4 py-1.5 bg-green-50 text-green-700 rounded-full text-sm">
+                  <span
+                    key={tag}
+                    className="px-4 py-1.5 bg-green-50 text-green-700 rounded-full text-sm"
+                  >
                     #{tag}
                   </span>
                 ))}
@@ -83,10 +98,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
             <div className="flex gap-12">
               {/* Main Content */}
-              <div className="flex-1">
-                {/* <MarkdownRenderer content={post.content} /> */}
+              {/* Main Content */}
+              <div className="flex-1 prose prose-green max-w-none">
                 <div
                   dangerouslySetInnerHTML={{ __html: post.content as string }}
+                  className="prose-headings:scroll-mt-20" // smooth scroll offset
                 />
               </div>
 
@@ -97,9 +113,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         </div>
 
         {/* Related Products */}
-        <RelatedProducts
-          tags={post.tags}
-        />
+        <RelatedProducts tags={post.tags} />
 
         {/* Share Buttons - Sticky on mobile */}
         <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-40 lg:hidden">

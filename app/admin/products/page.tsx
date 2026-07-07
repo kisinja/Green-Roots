@@ -125,11 +125,6 @@ export default function ProductsPage() {
           >
             + Add product
           </Link>
-          <button className="inline-flex items-center px-6 py-3 border-2 border-green-600 hover:bg-green-600 text-green-700 hover:text-white font-medium rounded-xl transition-all duration-200">
-            <a href="/api/admin/products/template" className="no-underline">
-              Download Excel Template
-            </a>
-          </button>
         </div>
       </div>
 

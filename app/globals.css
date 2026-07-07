@@ -16,14 +16,28 @@
   --cream: #fefcf8;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   background: var(--cream);
 }
 
 @layer utilities {
-  .font-display { font-family: 'Playfair Display', serif; }
-  .bg-cream { background-color: var(--cream); }
+  .font-display {
+    font-family: "Playfair Display", serif;
+  }
+  .bg-cream {
+    background-color: var(--cream);
+  }
+}
+
+.toolbar-btn {
+  @apply p-2.5 rounded-2xl hover:bg-white transition-colors text-green-700;
+}
+
+.toolbar-btn.active {
+  @apply bg-white shadow-sm text-green-800;
 }

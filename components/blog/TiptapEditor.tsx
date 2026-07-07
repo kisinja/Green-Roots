@@ -1,225 +1,202 @@
+// components/blog/TiptapEditor.tsx
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
+import Placeholder from "@tiptap/extension-placeholder";
+import TableOfContents from "@tiptap/extension-table-of-contents";
+import Heading from "@tiptap/extension-heading";
+import { useEffect, useCallback } from "react";
+import {
+  Bold,
+  Italic,
+  Underline as UnderlineIcon,
+  List,
+  ListOrdered,
+  Heading1,
+  Heading2,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Link as LinkIcon,
+  TableOfContents as TocIcon,
+} from "lucide-react";
 
 interface TiptapEditorProps {
-  content: string;
-  onChange: (content: string) => void;
+  content?: string;
+  onChange?: (html: string) => void;
 }
 
-const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
+const TiptapEditor = ({ content = "", onChange }: TiptapEditorProps) => {
   const editor = useEditor({
-    immediatelyRender: false,
+    immediatelyRender: false, // Prevents hydration warnings
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        heading: false, // Disable default heading to avoid conflicts
+      }),
+      Heading.configure({
+        levels: [1, 2, 3],
+        HTMLAttributes: {
+          class: "scroll-mt-20",
+        },
+      }),
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: { class: "text-green-700 hover:underline" },
+      }),
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
       Underline,
-      Image.configure({ inline: true }),
-      Link.configure({ openOnClick: false }),
-      TextAlign.configure({ types: ["paragraph", "heading"] }),
+      Placeholder.configure({
+        placeholder: "Start writing your beautiful article...",
+      }),
+      TableOfContents,
     ],
-    content: content || "",
+    content,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      onChange?.(editor.getHTML());
+    },
+    editorProps: {
+      attributes: {
+        class:
+          "prose prose-green max-w-none focus:outline-none min-h-[520px] p-8 bg-white rounded-b-3xl border border-green-100",
+      },
     },
   });
 
-  if (!editor) return null;
+  // Sync external content changes
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
 
-  const ToolbarBtn = ({
-    onClick,
-    active,
-    children,
-  }: {
-    onClick: () => void;
-    active?: boolean;
-    children: React.ReactNode;
-  }) => (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`
-        px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150
-        ${
-          active
-            ? "bg-[var(--green-700)] text-white shadow-sm"
-            : "text-[var(--green-700)] hover:bg-[var(--green-100)] hover:text-[var(--green-800)]"
-        }
-      `}
-    >
-      {children}
-    </button>
-  );
+  const setLink = useCallback(() => {
+    if (!editor) return;
+    const url = prompt(
+      "Enter the URL:",
+      editor.getAttributes("link").href || "",
+    );
+    if (url === null) return;
+    if (url === "") {
+      editor.chain().focus().unsetLink().run();
+      return;
+    }
+    editor.chain().focus().setLink({ href: url }).run();
+  }, [editor]);
 
-  const Divider = () => (
-    <span className="w-px h-5 bg-[var(--green-200)] self-center mx-1" />
-  );
+  const insertToC = useCallback(() => {
+    if (!editor) return;
+    editor.chain().focus().insertContent(`<h2>Table of Contents</h2>`).run();
+  }, [editor]);
+
+  if (!editor)
+    return <div className="p-8 text-green-600">Loading editor...</div>;
 
   return (
-    <div
-      className="rounded-2xl overflow-hidden flex flex-col"
-      style={{
-        border: "1.5px solid var(--green-200)",
-        background: "#fff",
-        minHeight: "600px",
-        boxShadow:
-          "0 2px 8px 0 rgba(31,94,31,0.06), 0 1px 2px 0 rgba(31,94,31,0.04)",
-      }}
-    >
+    <div className="border border-green-100 rounded-3xl overflow-hidden bg-white">
       {/* Toolbar */}
-      <div
-        className="flex flex-wrap items-center gap-1 px-4 py-2.5"
-        style={{
-          borderBottom: "1.5px solid var(--green-100)",
-          background: "var(--green-50)",
-        }}
-      >
-        {/* Text style */}
-        <ToolbarBtn
+      <div className="bg-green-50 border-b border-green-100 p-3 flex flex-wrap gap-1 items-center">
+        <button
           onClick={() => editor.chain().focus().toggleBold().run()}
-          active={editor.isActive("bold")}
+          className={`toolbar-btn ${editor.isActive("bold") ? "active" : ""}`}
         >
-          <strong>B</strong>
-        </ToolbarBtn>
-        <ToolbarBtn
+          <Bold size={20} />
+        </button>
+        <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          active={editor.isActive("italic")}
+          className={`toolbar-btn ${editor.isActive("italic") ? "active" : ""}`}
         >
-          <em>I</em>
-        </ToolbarBtn>
-        <ToolbarBtn
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          active={editor.isActive("strike")}
-        >
-          <s>S</s>
-        </ToolbarBtn>
-
-        <ToolbarBtn
+          <Italic size={20} />
+        </button>
+        <button
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          active={editor.isActive("underline")}
+          className={`toolbar-btn ${editor.isActive("underline") ? "active" : ""}`}
         >
-          <span style={{ textDecoration: "underline" }}>U</span>
-        </ToolbarBtn>
+          <UnderlineIcon size={20} />
+        </button>
 
-        <ToolbarBtn
-          onClick={() => editor.chain().focus().toggleCode().run()}
-          active={editor.isActive("code")}
-        >
-          {"</>"}
-        </ToolbarBtn>
+        <div className="w-px h-7 bg-green-200 mx-3" />
 
-        <Divider />
-
-        {/* Headings */}
-        <ToolbarBtn
+        <button
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 1 }).run()
           }
-          active={editor.isActive("heading", { level: 1 })}
+          className={`toolbar-btn ${editor.isActive("heading", { level: 1 }) ? "active" : ""}`}
         >
-          H1
-        </ToolbarBtn>
-        <ToolbarBtn
+          <Heading1 size={20} />
+        </button>
+        <button
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
-          active={editor.isActive("heading", { level: 2 })}
+          className={`toolbar-btn ${editor.isActive("heading", { level: 2 }) ? "active" : ""}`}
         >
-          H2
-        </ToolbarBtn>
-        <ToolbarBtn
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
-          }
-          active={editor.isActive("heading", { level: 3 })}
-        >
-          H3
-        </ToolbarBtn>
+          <Heading2 size={20} />
+        </button>
 
-        <Divider />
+        <div className="w-px h-7 bg-green-200 mx-3" />
 
-        {/* Lists */}
-        <ToolbarBtn
+        <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          active={editor.isActive("bulletList")}
+          className={`toolbar-btn ${editor.isActive("bulletList") ? "active" : ""}`}
         >
-          • List
-        </ToolbarBtn>
-        <ToolbarBtn
+          <List size={20} />
+        </button>
+        <button
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          active={editor.isActive("orderedList")}
+          className={`toolbar-btn ${editor.isActive("orderedList") ? "active" : ""}`}
         >
-          1. List
-        </ToolbarBtn>
-        <ToolbarBtn
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          active={editor.isActive("blockquote")}
-        >
-          ❝
-        </ToolbarBtn>
+          <ListOrdered size={20} />
+        </button>
 
-        <Divider />
+        <div className="w-px h-7 bg-green-200 mx-3" />
 
-        {/* Alignment */}
-        <ToolbarBtn
+        <button
           onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          active={editor.isActive({ textAlign: "left" })}
+          className={`toolbar-btn ${editor.isActive({ textAlign: "left" }) ? "active" : ""}`}
         >
-          ≡L
-        </ToolbarBtn>
-        <ToolbarBtn
+          <AlignLeft size={20} />
+        </button>
+        <button
           onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          active={editor.isActive({ textAlign: "center" })}
+          className={`toolbar-btn ${editor.isActive({ textAlign: "center" }) ? "active" : ""}`}
         >
-          ≡C
-        </ToolbarBtn>
-        <ToolbarBtn
+          <AlignCenter size={20} />
+        </button>
+        <button
           onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          active={editor.isActive({ textAlign: "right" })}
+          className={`toolbar-btn ${editor.isActive({ textAlign: "right" }) ? "active" : ""}`}
         >
-          ≡R
-        </ToolbarBtn>
+          <AlignRight size={20} />
+        </button>
 
-        <Divider />
+        <div className="w-px h-7 bg-green-200 mx-3" />
 
-        {/* History */}
-        <ToolbarBtn onClick={() => editor.chain().focus().undo().run()}>
-          ↩
-        </ToolbarBtn>
-        <ToolbarBtn onClick={() => editor.chain().focus().redo().run()}>
-          ↪
-        </ToolbarBtn>
+        <button
+          onClick={setLink}
+          className={`toolbar-btn ${editor.isActive("link") ? "active" : ""}`}
+        >
+          <LinkIcon size={20} />
+        </button>
+        <button
+          onClick={insertToC}
+          className="toolbar-btn text-green-700 hover:bg-white"
+          title="Insert Table of Contents"
+        >
+          <TocIcon size={20} />
+        </button>
       </div>
 
       {/* Editor Area */}
-      <EditorContent
-        editor={editor}
-        className="prose prose-green max-w-none p-8 flex-1 focus:outline-none overflow-auto"
-        style={{
-          minHeight: "520px",
-          fontFamily: "'DM Sans', sans-serif",
-          color: "var(--green-900)",
-          lineHeight: "1.8",
-        }}
-      />
+      <EditorContent editor={editor} />
 
-      {/* Footer word count */}
-      <div
-        className="flex justify-end px-5 py-2 text-xs"
-        style={{
-          borderTop: "1px solid var(--green-100)",
-          color: "var(--green-400)",
-          background: "var(--green-50)",
-          fontVariantNumeric: "tabular-nums",
-        }}
-      >
-        {editor.storage.characterCount?.words?.() ??
-          editor.getText().trim().split(/\s+/).filter(Boolean).length}{" "}
-        words
+      {/* Footer */}
+      <div className="px-6 py-2.5 text-xs text-green-600 bg-green-50 border-t border-green-100 flex justify-between">
+        <span>Rich Text Editor</span>
+        <span>Headings auto-generate Table of Contents</span>
       </div>
     </div>
   );
