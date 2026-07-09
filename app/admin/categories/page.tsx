@@ -141,7 +141,12 @@ export default function AdminCategoriesPage() {
               <span className="text-2xl">{cat.emoji}</span>
 
               <div>
-                <p className="font-semibold text-[#163e16]">{cat.name}</p>
+                <div className="flex flex-wrap gap-1">
+                  <p className="font-semibold text-[#163e16]">{cat.name}</p>
+                  <p className="text-gray-500 text-sm">
+                    {cat.id}
+                  </p>
+                </div>
 
                 <p className="text-xs text-gray-400">
                   {cat._count?.products ?? 0} products
