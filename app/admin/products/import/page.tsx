@@ -43,10 +43,6 @@ const AdminImportProductsPage = () => {
 
         <ol className="list-decimal ml-5 space-y-3 text-green-700 text-[15px]">
           <li>
-            Click <strong>"Download Template"</strong> to get the correct CSV
-            format.
-          </li>
-          <li>
             Fill in your product data (use real <strong>category_id</strong>{" "}
             from your database).
           </li>
