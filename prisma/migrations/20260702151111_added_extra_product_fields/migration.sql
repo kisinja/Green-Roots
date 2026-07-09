@@ -1,0 +1,3 @@
+ALTER TABLE "Product" ADD COLUMN "brand" TEXT,
+ADD COLUMN "imageAlt" TEXT,
+ADD COLUMN "sku" TEXT;

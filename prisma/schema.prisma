@@ -68,6 +68,9 @@ model Order {
   user        User        @relation(fields: [userId], references: [id])
   items       OrderItem[]
   payment     Payment?
+
+  waSentAt DateTime?
+  receiptUrl String?
 }
 
 model OrderItem {

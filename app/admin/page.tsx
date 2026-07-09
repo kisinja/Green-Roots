@@ -34,7 +34,7 @@ export default async function AdminPage() {
       orders={orders as never}
       categories={categories}
       stats={{
-        totalProducts: products.length,
+      totalProducts: products.length,
         totalOrders: orders.length,
         totalRevenue: formatKES(totalRevenue),
         totalUsers: users,
