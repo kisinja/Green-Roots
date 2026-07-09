@@ -141,11 +141,10 @@ export default function AdminCategoriesPage() {
               <span className="text-2xl">{cat.emoji}</span>
 
               <div>
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-2 items-center">
                   <p className="font-semibold text-[#163e16]">{cat.name}</p>
-                  <p className="text-gray-500 text-sm">
-                    {cat.id}
-                  </p>
+                  <span>&bull;</span>
+                  <p className="text-gray-500 text-sm">{cat.id}</p>
                 </div>
 
                 <p className="text-xs text-gray-400">
@@ -155,7 +154,10 @@ export default function AdminCategoriesPage() {
             </div>
 
             <button
-              onClick={() => {deleteCategory(cat.id); showToast("Category deleted")}}
+              onClick={() => {
+                deleteCategory(cat.id);
+                showToast("Category deleted");
+              }}
               className="text-red-500 hover:text-red-700"
             >
               <Trash2 size={18} />
