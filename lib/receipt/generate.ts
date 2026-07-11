@@ -61,6 +61,17 @@ export async function generateReceipt({
 
     y -= 20;
 
+    /* Add date */
+    const date = new Date().toLocaleDateString();
+    page.drawText(`Date: ${date}`, {
+        x: 40,
+        y,
+        font,
+        size: 12,
+    });
+
+    y -= 20;
+
     page.drawText(`Order: ${order.id}`, {
         x: 40,
         y,
