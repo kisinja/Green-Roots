@@ -2,12 +2,15 @@ import { prisma } from "@/lib/prisma";
 import RatingStars from "./rating-stars";
 import ReviewForm from "./review-form";
 import ReviewList from "./review-list";
+import { requireAuth } from "@/lib/auth";
 
 interface Props {
   productId: string;
 }
 
 export default async function ProductReviews({ productId }: Props) {
+  const session = await requireAuth();
+
   const product = await prisma.product.findUnique({
     where: {
       id: productId,
@@ -28,7 +31,10 @@ export default async function ProductReviews({ productId }: Props) {
     },
   });
 
+  const userId = session?.userId;
+
   if (!product) return null;
+  if (!userId) return null;
 
   return (
     <section className="mt-16">
