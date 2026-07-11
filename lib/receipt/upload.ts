@@ -27,6 +27,9 @@ export async function uploadReceipt(
                     return;
                 }
 
+                console.log("=== CLOUDINARY RESULT ===");
+                console.log(result);
+
                 resolve(result.secure_url);
             }
         );
