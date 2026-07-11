@@ -71,6 +71,7 @@ model Order {
 
   waSentAt DateTime?
   receiptUrl String?
+  receiptNumber String? @unique
 }
 
 model OrderItem {
