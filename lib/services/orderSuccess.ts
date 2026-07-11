@@ -1,12 +1,14 @@
+// /lib/services/orderSuccess.ts
+
 import { prisma } from "@/lib/prisma";
 import { generateReceipt } from "@/lib/receipt/generate";
 import { uploadReceipt } from "@/lib/receipt/upload";
 import { generateReceiptNumber } from "@/lib/receipt/receiptNumber";
 
-import {
+/* import {
   sendCustomerReceipt,
   sendAdminNotification,
-} from "@/lib/whatsapp/send";
+} from "@/lib/whatsapp/send"; */
 
 export async function handleSuccessfulOrder(orderId: string) {
   try {
@@ -15,6 +17,7 @@ export async function handleSuccessfulOrder(orderId: string) {
       where: { id: orderId },
       select: {
         waMessage: true,
+        receiptUrl: true,
       },
     });
 
@@ -26,6 +29,10 @@ export async function handleSuccessfulOrder(orderId: string) {
       console.log("WhatsApp already sent.");
       return;
     }
+
+    if(existing?.receiptUrl){
+    return;
+}
 
     // Fetch complete order
     const order = await prisma.order.findUnique({
@@ -64,19 +71,17 @@ export async function handleSuccessfulOrder(orderId: string) {
       receiptNumber
     );
 
-    // Send customer WhatsApp
-    await sendCustomerReceipt({
+    /* await sendCustomerReceipt({
       order,
       receiptUrl,
       receiptNumber,
     });
 
-    // Send admin WhatsApp
     await sendAdminNotification({
       order,
       receiptUrl,
       receiptNumber,
-    });
+    }); */
 
     // Save info
     await prisma.order.update({

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { handleSuccessfulOrder } from "@/lib/services/orderSuccess";
+import { onPaymentConfirmed } from "@/lib/payment/onPaymentConfirmed";
 
 export async function POST(req: NextRequest) {
     try {
@@ -99,6 +101,8 @@ export async function POST(req: NextRequest) {
                     });
                 }
             });
+
+            await onPaymentConfirmed(orderId);
         }
 
         // Failed payment

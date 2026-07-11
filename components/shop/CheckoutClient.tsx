@@ -4,10 +4,13 @@ import { useState } from "react";
 import { useCart } from "@/store/cart";
 import { formatKES } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { Loader2, CheckCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { showToast } from "../ui/Toaster";
 
-type Step = "details" | "paying" | "done";
+type Step = "details" | "paying";
+
+/* props */
+
 
 export function CheckoutClient() {
   const { items, total, clearCart } = useCart();
@@ -94,25 +97,23 @@ export function CheckoutClient() {
         throw new Error("M-Pesa push failed. Try WhatsApp order.");
       }
 
-      showToast("STK Push sent! Check your phone.", "success");
+      showToast(
+        "STK Push sent! Complete the payment on your phone.",
+        "success",
+      );
 
+      await new Promise((resolve) => setTimeout(resolve, 700));
+
+      // Clear the local cart
       clearCart();
-      setStep("done");
+
+      // Redirect to the payment status page
+      router.push(`/orders/success/${order.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
       setStep("details");
     }
   };
-
-  if (step === "done") {
-    return (
-      <div className="text-center py-16">
-        <CheckCircle size={56} className="text-green-500 mx-auto mb-4" />
-        <h2 className="text-xl font-semibold">Order placed!</h2>
-        <p className="text-gray-500">Complete payment on your phone.</p>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -151,7 +152,7 @@ export function CheckoutClient() {
         {step === "paying" ? (
           <>
             <Loader2 className="animate-spin inline mr-2" />
-            Processing...
+            Sending STK Push ...
           </>
         ) : (
           `Pay ${formatKES(totalAmount)}`
