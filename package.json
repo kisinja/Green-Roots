@@ -25,6 +25,7 @@
     "@tiptap/pm": "^3.27.3",
     "@tiptap/react": "^3.27.3",
     "@tiptap/starter-kit": "^3.27.3",
+    "@vercel/blob": "^2.6.1",
     "adm-zip": "^0.5.17",
     "axios": "^1.18.1",
     "bcryptjs": "^2.4.3",

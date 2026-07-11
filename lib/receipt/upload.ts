@@ -1,40 +1,20 @@
 // lib/receipt/upload.ts
 
-import { v2 as cloudinary } from "cloudinary";
-import streamifier from "streamifier";
-
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+import { put } from '@vercel/blob';
 
 export async function uploadReceipt(
     buffer: Buffer,
     receiptNumber: string
 ): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-            {
-                resource_type: "raw",
-                folder: "receipts",
-                public_id: receiptNumber,
-                format:'pdf',
-                overwrite: true,
-            },
-            (error, result) => {
-                if (error || !result) {
-                    reject(error ?? new Error("Upload failed"));
-                    return;
-                }
+    const blob = await put(
+        `receipts/${receiptNumber}.pdf`,
+        buffer,
+        {
+            access: 'public',
+            contentType: 'application/pdf',
+            addRandomSuffix: false,
+        }
+    );
 
-                console.log("=== CLOUDINARY RESULT ===");
-                console.log(result);
-
-                resolve(result.secure_url);
-            }
-        );
-
-        streamifier.createReadStream(buffer).pipe(stream);
-    });
+    return blob.url;
 }
