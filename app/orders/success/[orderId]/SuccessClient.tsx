@@ -134,14 +134,17 @@ export default function SuccessClient({ orderId }: Props) {
                 </div>
 
                 <div className="mt-6 flex gap-4">
-                  <a
-                    href={order.receiptUrl}
-                    target="_blank"
-                    className="inline-flex items-center gap-2 rounded-xl bg-[var(--green-700)] px-6 py-3 text-white hover:bg-[var(--green-800)] transition"
-                  >
-                    <Download size={18} />
-                    Download Receipt
-                  </a>
+                  {order?.receiptNumber && (
+                    <a
+                      href={`/api/orders/${orderId}/receipt`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl bg-[var(--green-700)] px-6 py-3 text-white hover:bg-[var(--green-800)] transition"
+                    >
+                      <Download size={18} />
+                      Download Receipt
+                    </a>
+                  )}
 
                   <Link
                     href="/shop"
