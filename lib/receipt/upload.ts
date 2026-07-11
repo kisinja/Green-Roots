@@ -18,7 +18,8 @@ export async function uploadReceipt(
             {
                 resource_type: "raw",
                 folder: "receipts",
-                public_id: `${receiptNumber}.pdf`,
+                public_id: receiptNumber,
+                format:'pdf',
                 overwrite: true,
             },
             (error, result) => {
