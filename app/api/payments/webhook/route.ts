@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { handleSuccessfulOrder } from "@/lib/services/orderSuccess";
 import { onPaymentConfirmed } from "@/lib/payment/onPaymentConfirmed";
+import { confirmPayment } from "@/lib/payment/confirmPayment";
 
 export async function POST(req: NextRequest) {
     try {
@@ -35,74 +36,8 @@ export async function POST(req: NextRequest) {
 
         // Successful payment
         if (state === "COMPLETE") {
-            const payment = await prisma.payment.findUnique({
-                where: {
-                    orderId,
-                },
-            });
 
-            if (!payment) {
-                return NextResponse.json(
-                    { error: "Payment not found" },
-                    { status: 404 }
-                );
-            }
-
-            // Prevent duplicate processing
-            if (payment.status === "SUCCESS") {
-                return NextResponse.json({
-                    success: true,
-                    message: "Already processed",
-                });
-            }
-
-            await prisma.$transaction(async (tx) => {
-                await tx.payment.update({
-                    where: {
-                        orderId,
-                    },
-                    data: {
-                        status: "SUCCESS",
-                        providerRef: invoice_id,
-                    },
-                });
-
-                await tx.order.update({
-                    where: {
-                        id: orderId,
-                    },
-                    data: {
-                        status: "CONFIRMED",
-                        mpesaRef: invoice_id,
-                    },
-                });
-
-                const order = await tx.order.findUnique({
-                    where: {
-                        id: orderId,
-                    },
-                    include: {
-                        items: true,
-                    },
-                });
-
-                if (!order) return;
-
-                for (const item of order.items) {
-                    await tx.product.update({
-                        where: {
-                            id: item.productId,
-                        },
-                        data: {
-                            stock: {
-                                decrement: item.quantity,
-                            },
-                        },
-                    });
-                }
-            });
-
-            await onPaymentConfirmed(orderId);
+            await confirmPayment(orderId, invoice_id);
         }
 
         // Failed payment

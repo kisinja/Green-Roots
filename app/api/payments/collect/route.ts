@@ -51,6 +51,17 @@ export async function POST(req: Request) {
             email: order.user.email,
         });
 
+        if(payment.invoice_id){
+            await prisma.payment.update({
+                where: {
+                    orderId: order.id,
+                },
+                data: {
+                    providerRef: payment.invoice_id,
+                },
+            })
+        }
+
         return Response.json(payment);
     } catch (error) {
         console.error("PAYMENT COLLECTION ERROR:", error);

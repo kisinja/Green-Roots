@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   Download,
 } from "lucide-react";
+import { showToast } from "@/components/ui/Toaster";
 
 interface Props {
   orderId: string;
@@ -18,12 +19,20 @@ interface Props {
 export default function SuccessClient({ orderId }: Props) {
   const [loading, setLoading] = useState(true);
 
+  const [checking, setChecking] = useState(false);
+
   const [order, setOrder] = useState<any>(null);
+
+  const MAX_POLLS = 40; // 40 × 3s = 2 minutes
+
+  let polls = 0;
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
     async function checkStatus() {
+      polls++;
+
       try {
         const res = await fetch(`/api/orders/${orderId}/status`, {
           cache: "no-store",
@@ -37,12 +46,17 @@ export default function SuccessClient({ orderId }: Props) {
 
         if (data.status === "CONFIRMED" && data.receiptUrl) {
           clearInterval(interval);
+          return;
         }
 
-        setLoading(false);
+        if (polls >= MAX_POLLS) {
+          clearInterval(interval);
+        }
       } catch (err) {
         console.error(err);
       }
+
+      setLoading(false);
     }
 
     checkStatus();
@@ -51,6 +65,38 @@ export default function SuccessClient({ orderId }: Props) {
 
     return () => clearInterval(interval);
   }, [orderId]);
+
+  const checkPaymentNow = async () => {
+    try {
+      setChecking(true);
+
+      const res = await fetch(`/api/orders/${orderId}/status`, {
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        throw new Error("Unable to check payment.");
+      }
+
+      const data = await res.json();
+
+      setOrder(data);
+
+      if (data.status === "CONFIRMED") {
+        return;
+      }
+
+      alert(
+        "Payment is still pending. If you've just paid, please wait a few moments and try again.",
+      );
+    } catch (err) {
+      console.error(err);
+
+      showToast("Unable to verify payment at the moment.", "error");
+    } finally {
+      setChecking(false);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-cream py-14 px-4">
@@ -198,6 +244,25 @@ export default function SuccessClient({ orderId }: Props) {
                 download your receipt.
               </p>
             </div>
+
+            {order?.status !== "CONFIRMED" && (
+              <div className="mt-6">
+                <button
+                  onClick={checkPaymentNow}
+                  disabled={checking}
+                  className="w-full rounded-xl bg-[var(--green-700)] py-3 font-semibold text-white transition hover:bg-[var(--green-800)] disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {checking ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Checking Payment...
+                    </span>
+                  ) : (
+                    "Check Payment Again"
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
