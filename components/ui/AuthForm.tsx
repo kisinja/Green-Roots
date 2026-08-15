@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "@/store/auth";
+import { showToast } from "./Toaster";
 
 interface Props {
   mode: "login" | "register";
@@ -21,6 +22,7 @@ export function AuthForm({ mode }: Props) {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const set = (k: string, v: string) =>
     setForm((f) => ({
@@ -63,6 +65,7 @@ export function AuthForm({ mode }: Props) {
       // anything else reading useAuth) updates without a manual refresh.
       // data.user must be returned by /api/auth/login and /api/auth/register.
       useAuth.getState().setUser(data.user);
+      showToast("Authorization Successful", "success");
 
       const params = new URLSearchParams(window.location.search);
 
@@ -147,14 +150,26 @@ export function AuthForm({ mode }: Props) {
             Phone Number (Password)
           </label>
 
-          <input
-            value={form.password}
-            onChange={(e) => set("password", e.target.value)}
-            placeholder="0712345678"
-            type="password"
-            className={`mt-1.5 ${inputClass}`}
-            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-          />
+          <div className="relative mt-1.5">
+            <input
+              value={form.password}
+              onChange={(e) => set("password", e.target.value)}
+              placeholder="0712345678"
+              type={showPassword ? "text" : "password"}
+              className={`${inputClass} pr-11`}
+              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+            />
+
+            <button
+              type="button"
+              tabIndex={-1}
+              onClick={() => setShowPassword((value) => !value)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
 
           <p className="mt-1 text-xs text-gray-500">
             Enter the same phone number you registered with.
