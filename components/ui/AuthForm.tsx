@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@/store/auth";
 
 interface Props {
   mode: "login" | "register";
@@ -57,6 +58,11 @@ export function AuthForm({ mode }: Props) {
       if (!res.ok) {
         throw new Error(data.error || "Something went wrong");
       }
+
+      // ✅ Sync the shared auth store immediately so the Navbar (and
+      // anything else reading useAuth) updates without a manual refresh.
+      // data.user must be returned by /api/auth/login and /api/auth/register.
+      useAuth.getState().setUser(data.user);
 
       const params = new URLSearchParams(window.location.search);
 

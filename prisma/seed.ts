@@ -49,11 +49,11 @@ async function main() {
     where: { email: 'admin@greenroots.co.ke' },
     update: {},
     create: {
-      name: 'Mkulima Supply Store Admin',
-      email: 'admin@greenroots.co.ke',
+      name: 'Mkulima Supply Store Admin', // Admin Mkulima Supply Store
+      email: 'admin@greenroots.co.ke', // admin@mkulimasupplystore.co.ke
       password: hashedPassword,
       role: 'ADMIN',
-      phone: '254700000000',
+      phone: '254700000000', // 0706782301
     },
   })
   console.log('✅ Admin user created')

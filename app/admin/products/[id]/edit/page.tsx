@@ -563,14 +563,17 @@ export default function EditProductPage() {
 
                   <button
                     type="button"
+                    role="switch"
+                    aria-checked={form.featured}
+                    aria-label="Toggle featured product"
                     onClick={() => set("featured", !form.featured)}
-                    className={`relative h-7 w-14 rounded-full transition-colors ${
+                    className={`relative h-7 w-14 shrink-0 rounded-full transition-colors duration-200 ${
                       form.featured ? "bg-[var(--green-600)]" : "bg-gray-300"
                     }`}
                   >
                     <span
-                      className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow-md transition-transform ${
-                        form.featured ? "translate-x-8" : "translate-x-1"
+                      className={`absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow-md transition-transform duration-200 ${
+                        form.featured ? "translate-x-7" : "translate-x-0"
                       }`}
                     />
                   </button>

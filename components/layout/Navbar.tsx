@@ -13,21 +13,16 @@ import {
 } from "lucide-react";
 
 import { useCart } from "@/store/cart";
+import { useAuth } from "@/store/auth";
 import { useState, useEffect } from "react";
-
-interface SessionUser {
-  name: string;
-  email: string;
-  role: string;
-}
+import { showToast } from "../ui/Toaster";
 
 export function Navbar() {
   const { count, openCart } = useCart();
+  const { user, fetchUser, clearUser, hasFetched } = useAuth();
 
   const [mounted, setMounted] = useState(false);
   const [cartCount, setCartCount] = useState(0);
-
-  const [user, setUser] = useState<SessionUser | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
@@ -35,10 +30,11 @@ export function Navbar() {
     setMounted(true);
     setCartCount(count());
 
-    fetch("/api/auth/me")
-      .then((r) => r.json())
-      .then((d) => setUser(d.user));
-  }, [count]);
+    if (!hasFetched) {
+      fetchUser();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (mounted) {
@@ -49,9 +45,9 @@ export function Navbar() {
   const logout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
 
-    setUser(null);
+    clearUser();
     setUserMenuOpen(false);
-
+    showToast("Logout successful", "success");
     window.location.href = "/";
   };
 
@@ -80,27 +76,27 @@ export function Navbar() {
         <nav className="hidden md:flex items-center gap-12">
           <div className="flex gap-1">
             <Link
-            href="/"
-            className="text-white/75 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium transition-all"
-          >
-            Home
-          </Link>
-
-          <Link
-            href="/shop"
-            className="text-white/75 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium transition-all"
-          >
-            Shop
-          </Link>
-
-          {user?.role === "ADMIN" && (
-            <Link
-              href="/admin"
-              className="text-green-300 hover:text-green-200 px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium transition-all"
+              href="/"
+              className="text-white/75 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium transition-all"
             >
-              Admin
+              Home
             </Link>
-          )}
+
+            <Link
+              href="/shop"
+              className="text-white/75 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium transition-all"
+            >
+              Shop
+            </Link>
+
+            {user?.role === "ADMIN" && (
+              <Link
+                href="/admin"
+                className="text-green-300 hover:text-green-200 px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium transition-all"
+              >
+                Admin
+              </Link>
+            )}
           </div>
 
           {/* New Blog Link */}

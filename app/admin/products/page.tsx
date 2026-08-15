@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { showToast } from "@/components/ui/Toaster";
-import {useRouter} from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 interface Category {
   id: string;
@@ -19,6 +19,7 @@ interface Product {
   badge: string | null;
   featured: boolean;
   category: Category;
+  images: string[] | null;
 }
 
 export default function ProductsPage() {
@@ -29,7 +30,7 @@ export default function ProductsPage() {
   const [stockFilter, setStockFilter] = useState("");
   const [page, setPage] = useState(1);
 
-   const router = useRouter();
+  const router = useRouter();
 
   const PER_PAGE = 10;
 
@@ -68,25 +69,26 @@ export default function ProductsPage() {
   const slice = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   const deleteProduct = async (productId: string) => {
-  try {
-    const response = await fetch(`/api/admin/products/${productId}`, {
-      method: "DELETE",
-    });
+    try {
+      const response = await fetch(`/api/admin/products/${productId}`, {
+        method: "DELETE",
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || "Failed to delete product");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to delete product");
+      }
+
+      // Optional: await response.json() if you want to use the success data
+      showToast("Product deleted successfully!", "success");
+
+      router.refresh();
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Something went wrong";
+      showToast(message, "error");
     }
-
-    // Optional: await response.json() if you want to use the success data
-    showToast("Product deleted successfully!", "success");
-    
-    router.refresh();
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Something went wrong";
-    showToast(message, "error");
-  }
-};
+  };
   const stats = useMemo(
     () => ({
       total: products.length,
@@ -239,8 +241,16 @@ export default function ProductsPage() {
                 >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-lg bg-[var(--green-50)] flex items-center justify-center text-lg flex-shrink-0">
-                        {p.emoji}
+                      <div className="w-9 h-9 rounded-lg bg-[var(--green-50)] flex items-center justify-center text-lg flex-shrink-0 overflow-hidden">
+                        {p.images && p.images.length > 0 ? (
+                          <img
+                            src={p.images[0]}
+                            alt={p.name}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                        ) : (
+                          p.emoji
+                        )}
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">{p.name}</p>
@@ -255,7 +265,7 @@ export default function ProductsPage() {
                     {stockLabel(p.stock)}
                   </td>
                   <td className="px-4 py-3">
-                    <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--green-100)] text-[var(--green-700)]">
+                    <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--green-100)] text-[var(--green-700)] whitespace-nowrap shrink-0 capitalize">
                       {p.category.name}
                     </span>
                   </td>
