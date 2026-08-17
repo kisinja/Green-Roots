@@ -28,6 +28,7 @@ async function getFeaturedProducts() {
     where: { featured: true },
     include: { category: true },
     take: 6,
+    orderBy: { createdAt: "desc" },
   });
 }
 
