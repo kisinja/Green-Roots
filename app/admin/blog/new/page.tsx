@@ -4,7 +4,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ImageUploader from "@/components/admin/ImageUploader";
-import MarkdownRenderer from "@/components/blog/MarkdownRenderer";
 import { showToast } from "@/components/ui/Toaster";
 import TiptapEditor from "@/components/blog/TiptapEditor";
 
@@ -16,20 +15,21 @@ export default function NewBlogPost() {
     slug: "",
     excerpt: "",
     content: "",
-    coverImage: "", // Single string for blog cover
+    coverImage: "",
     published: false,
     featured: false,
     tags: [] as string[],
     seoTitle: "",
     seoDescription: "",
     seoKeywords: [] as string[],
+    readTime: "" as string | number,
   });
 
-  const [coverImages, setCoverImages] = useState<string[]>([]); // For ImageUploader
+  const [coverImages, setCoverImages] = useState<string[]>([]);
   const [preview, setPreview] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [slugTouched, setSlugTouched] = useState(false);
 
-  // Sync coverImage with ImageUploader
   useEffect(() => {
     if (coverImages.length > 0) {
       setForm((prev) => ({ ...prev, coverImage: coverImages[0] }));
@@ -38,26 +38,36 @@ export default function NewBlogPost() {
     }
   }, [coverImages]);
 
-  // Auto-generate slug from title
+  // Auto-generate slug from title, but stop once the user edits it manually
   useEffect(() => {
-    if (form.title && !form.slug) {
+    if (form.title && !slugTouched) {
       const generatedSlug = form.title
         .toLowerCase()
+        .trim()
         .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "");
       setForm((prev) => ({ ...prev, slug: generatedSlug }));
     }
-  }, [form.title]);
+  }, [form.title, slugTouched]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!form.title.trim() || !form.excerpt.trim() || !form.content.trim()) {
+      showToast("Title, excerpt, and content are required", "error");
+      return;
+    }
+
     setSaving(true);
 
     try {
       const res = await fetch("/api/admin/blog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          readTime: form.readTime ? Number(form.readTime) : undefined,
+        }),
       });
 
       if (res.ok) {
@@ -78,6 +88,12 @@ export default function NewBlogPost() {
   const addTag = (tag: string) => {
     if (tag && !form.tags.includes(tag)) {
       setForm((prev) => ({ ...prev, tags: [...prev.tags, tag] }));
+    }
+  };
+
+  const addKeyword = (kw: string) => {
+    if (kw && !form.seoKeywords.includes(kw)) {
+      setForm((prev) => ({ ...prev, seoKeywords: [...prev.seoKeywords, kw] }));
     }
   };
 
@@ -132,7 +148,10 @@ export default function NewBlogPost() {
               <input
                 type="text"
                 value={form.slug}
-                onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                onChange={(e) => {
+                  setSlugTouched(true);
+                  setForm({ ...form, slug: e.target.value });
+                }}
                 className="w-full px-6 py-4 border border-green-200 rounded-2xl focus:outline-none focus:border-green-500 font-mono text-sm"
               />
             </div>
@@ -205,6 +224,95 @@ export default function NewBlogPost() {
             />
           </div>
 
+          {/* Read Time */}
+          <div>
+            <label className="block text-sm font-medium text-green-700 mb-2">
+              Read Time (minutes)
+            </label>
+            <input
+              type="number"
+              min={1}
+              value={form.readTime}
+              onChange={(e) => setForm({ ...form, readTime: e.target.value })}
+              className="w-full md:w-48 px-6 py-4 border border-green-200 rounded-2xl focus:outline-none focus:border-green-500"
+              placeholder="Auto-estimated if left blank"
+            />
+          </div>
+
+          {/* SEO Section */}
+          <div className="border border-green-100 rounded-3xl p-6 bg-white space-y-6">
+            <h3 className="text-lg font-medium text-green-800">SEO Settings</h3>
+
+            <div>
+              <label className="block text-sm font-medium text-green-700 mb-2">
+                SEO Title
+              </label>
+              <input
+                type="text"
+                value={form.seoTitle}
+                onChange={(e) => setForm({ ...form, seoTitle: e.target.value })}
+                className="w-full px-6 py-4 border border-green-200 rounded-2xl focus:outline-none focus:border-green-500"
+                placeholder="Falls back to article title if left blank"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-green-700 mb-2">
+                SEO Description
+              </label>
+              <textarea
+                value={form.seoDescription}
+                onChange={(e) =>
+                  setForm({ ...form, seoDescription: e.target.value })
+                }
+                rows={2}
+                className="w-full px-6 py-4 border border-green-200 rounded-2xl focus:outline-none focus:border-green-500"
+                placeholder="Falls back to excerpt if left blank"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-green-700 mb-2">
+                SEO Keywords
+              </label>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {form.seoKeywords.map((kw, i) => (
+                  <span
+                    key={i}
+                    className="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm flex items-center gap-1"
+                  >
+                    {kw}
+                    <button
+                      onClick={() =>
+                        setForm((prev) => ({
+                          ...prev,
+                          seoKeywords: prev.seoKeywords.filter(
+                            (_, idx) => idx !== i,
+                          ),
+                        }))
+                      }
+                      className="text-green-500 hover:text-red-500"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <input
+                type="text"
+                placeholder="Type keyword and press Enter"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addKeyword(e.currentTarget.value.trim());
+                    e.currentTarget.value = "";
+                  }
+                }}
+                className="w-full px-6 py-4 border border-green-200 rounded-2xl focus:outline-none focus:border-green-500"
+              />
+            </div>
+          </div>
+
           {/* Publish Options */}
           <div className="flex gap-8">
             <label className="flex items-center gap-3 cursor-pointer">
@@ -273,13 +381,16 @@ export default function NewBlogPost() {
               {form.title || "Untitled Article"}
             </h1>
 
-            <div className="prose prose-green max-w-none">
-              <MarkdownRenderer
-                content={
-                  form.content || "*Preview will appear here as you type...*"
-                }
-              />
-            </div>
+            {/* Render the actual Tiptap HTML, same as the live post page — 
+                NOT MarkdownRenderer, which would show escaped/literal tags */}
+            <div
+              className="prose prose-green max-w-none"
+              dangerouslySetInnerHTML={{
+                __html:
+                  form.content ||
+                  "<p><em>Preview will appear here as you type...</em></p>",
+              }}
+            />
           </div>
         )}
       </div>

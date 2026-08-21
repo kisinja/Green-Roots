@@ -63,7 +63,7 @@ export default async function BlogPostPage({
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-2 text-sm text-green-600 mb-8">
               <Link href="/blog" className="hover:text-green-700">
-                Blog
+                Article
               </Link>
               <span>→</span>
               <span className="text-green-800">{post.title}</span>
