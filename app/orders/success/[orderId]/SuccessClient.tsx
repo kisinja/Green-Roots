@@ -86,7 +86,7 @@ export default function SuccessClient({ orderId }: Props) {
         return;
       }
 
-      alert(
+      showToast(
         "Payment is still pending. If you've just paid, please wait a few moments and try again.",
       );
     } catch (err) {
