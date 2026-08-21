@@ -1,3 +1,4 @@
+// components/shop/ProductCard.tsx
 "use client";
 
 import Link from "next/link";
@@ -9,6 +10,8 @@ import { useCart } from "@/store/cart";
 import { formatKES } from "@/lib/utils";
 
 import type { Product } from "@/types";
+
+const PLACEHOLDER_IMAGE = "/images/product-placeholder.jpg";
 
 const BADGE_STYLES: Record<string, string> = {
   "Just In": "bg-green-600 text-white",
@@ -28,6 +31,18 @@ export function ProductCard({ product }: { product: Product }) {
       : [];
 
   const [currentImage, setCurrentImage] = useState(0);
+  const [brokenImages, setBrokenImages] = useState<Set<number>>(new Set());
+
+  const markBroken = (index: number) => {
+    setBrokenImages((prev) => {
+      const next = new Set(prev);
+      next.add(index);
+      return next;
+    });
+  };
+
+  const getSrc = (index: number) =>
+    brokenImages.has(index) ? PLACEHOLDER_IMAGE : images[index];
 
   // Auto image carousel
   useEffect(() => {
@@ -63,25 +78,31 @@ export function ProductCard({ product }: { product: Product }) {
                   <div
                     key={index}
                     className={`absolute inset-0 transition-opacity duration-700 ${
-                      index === currentImage
-                        ? "opacity-100"
-                        : "opacity-0"
+                      index === currentImage ? "opacity-100" : "opacity-0"
                     }`}
                   >
                     <Image
-                      src={image}
+                      src={getSrc(index)}
                       alt={product.name}
                       fill
                       loading="eager"
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 768px) 100vw, 400px"
+                      onError={() => markBroken(index)}
                     />
                   </div>
                 ))}
               </>
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-7xl">
-                {product.emoji || "📦"}
+              <div className="relative aspect-[4/3] w-full">
+                <Image
+                  src={PLACEHOLDER_IMAGE}
+                  alt={product.name}
+                  fill
+                  loading="eager"
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 400px"
+                />
               </div>
             )}
 
@@ -92,8 +113,7 @@ export function ProductCard({ product }: { product: Product }) {
             {product.badge && (
               <div
                 className={`absolute left-3 top-3 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide shadow-md backdrop-blur-sm ${
-                  BADGE_STYLES[product.badge] ||
-                  "bg-black/80 text-white"
+                  BADGE_STYLES[product.badge] || "bg-black/80 text-white"
                 }`}
               >
                 {product.badge}
@@ -152,10 +172,7 @@ export function ProductCard({ product }: { product: Product }) {
           {/* Rating */}
           <div className="mt-4 flex items-center gap-2">
             <div className="flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1">
-              <Star
-                size={13}
-                className="fill-amber-400 text-amber-400"
-              />
+              <Star size={13} className="fill-amber-400 text-amber-400" />
 
               <span className="text-xs font-semibold text-amber-700">
                 {product.averageRating?.toFixed(1) || "0.0"}
@@ -180,9 +197,7 @@ export function ProductCard({ product }: { product: Product }) {
                   {formatKES(product.price)}
                 </span>
 
-                <span className="pb-1 text-xs text-gray-400">
-                  /unit
-                </span>
+                <span className="pb-1 text-xs text-gray-400">/unit</span>
               </div>
             </div>
 

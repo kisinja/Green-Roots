@@ -6,6 +6,7 @@ import { CategoryCard } from "@/components/shop/CategoryCard";
 import { generateLocalBusinessJsonLd } from "@/lib/seo";
 import { getWeather } from "@/lib/weather";
 import { getHeroByWeather } from "@/lib/hero-intelligence";
+import HomeBlogSection from "@/components/blog/HomeBlogSection";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://www.mkulimasupply.store";
@@ -185,6 +186,7 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+      <HomeBlogSection />
     </>
   );
 }

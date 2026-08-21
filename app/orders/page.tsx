@@ -119,7 +119,7 @@ export default async function OrdersPage() {
                     href={order.receiptUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-green-700 hover:text-green-800 hover:underline"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-500 hover:text-teal-600 underline"
                   >
                     <FileText size={13} />
                     View Receipt

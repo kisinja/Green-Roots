@@ -101,7 +101,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
         <div className="flex items-center justify-between text-xs text-green-500 mb-6">
           <div className="flex items-center gap-1.5">
             <Calendar className="w-4 h-4" />
-            {format(new Date(post.createdAt), 'dd MMM yyyy')}
+            {format(new Date(post.createdAt),"dd MMM")}
           </div>
           {post.readTime && <span>{post.readTime} min read</span>}
         </div>

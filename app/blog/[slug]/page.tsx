@@ -9,6 +9,11 @@ import MarkdownRenderer from "@/components/blog/MarkdownRenderer";
 import ReadingProgress from "@/components/blog/ReadingProgress";
 import TableOfContents from "@/components/blog/TableOfContents";
 import RelatedProducts from "@/components/blog/RelatedProducts";
+import ShareButtons from "@/components/blog/ShareButtons";
+import { Share2 } from "lucide-react";
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.mkulimasupply.store";
 
 export async function generateMetadata({
   params,
@@ -33,6 +38,7 @@ export default async function BlogPostPage({
   if (!post) return notFound();
 
   const jsonLd = generateBlogJsonLd(post);
+  const postUrl = `${SITE_URL}/blog/${post.slug}`;
 
   return (
     <>
@@ -58,7 +64,7 @@ export default async function BlogPostPage({
           </div>
         )}
 
-        <div className="max-w-4xl mx-auto px-6 -mt-20 relative z-10">
+        <div className="max-w-6xl mx-auto px-6 -mt-20 relative z-10">
           <div className="bg-white rounded-3xl shadow-xl p-10 md:p-16">
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-2 text-sm text-green-600 mb-8">
@@ -73,13 +79,27 @@ export default async function BlogPostPage({
               {post.title}
             </h1>
 
-            <div className="flex items-center gap-6 text-sm text-green-600 mb-12">
-              <time dateTime={post.createdAt.toISOString()}>
-                {new Intl.DateTimeFormat("en-KE", { dateStyle: "long" }).format(
-                  new Date(post.createdAt),
-                )}
-              </time>
-              {post.readTime && <span>• {post.readTime} min read</span>}
+            <div className="flex flex-wrap items-center justify-between gap-6 mb-12">
+              <div className="flex items-center gap-2 text-sm text-green-600">
+                <time dateTime={post.createdAt.toISOString()}>
+                  {new Intl.DateTimeFormat("en-KE", {
+                    dateStyle: "long",
+                  }).format(new Date(post.createdAt))}
+                </time>
+                {post.readTime && <span>• {post.readTime} min read</span>}
+              </div>
+
+              {/* Share bar (desktop/inline) */}
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+                  <Share2 />
+                </span>
+                <ShareButtons
+                  url={postUrl}
+                  title={post.title}
+                  variant="inline"
+                />
+              </div>
             </div>
 
             {/* Tags */}
@@ -97,7 +117,6 @@ export default async function BlogPostPage({
             )}
 
             <div className="flex gap-12">
-              {/* Main Content */}
               {/* Main Content */}
               <div className="flex-1 prose prose-green max-w-none">
                 <div
@@ -117,7 +136,7 @@ export default async function BlogPostPage({
 
         {/* Share Buttons - Sticky on mobile */}
         <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-40 lg:hidden">
-          {/* Add share buttons here */}
+          <ShareButtons url={postUrl} title={post.title} variant="floating" />
         </div>
       </div>
     </>
