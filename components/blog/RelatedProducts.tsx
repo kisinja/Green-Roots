@@ -45,7 +45,7 @@ export default async function RelatedProducts({
         this guide
       </p>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {products.slice(0, 4).map((product: any) => (
           <ProductCard key={product.id} product={product} />
         ))}
