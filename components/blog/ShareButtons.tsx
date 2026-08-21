@@ -6,6 +6,8 @@ import { useState } from "react";
 interface ShareButtonsProps {
   url: string;
   title: string;
+  postId: string;
+  initialCounts?: Record<string, number>;
   variant?: "inline" | "floating";
 }
 
@@ -76,18 +78,41 @@ const PLATFORM_ORDER: Platform[] = [
   "instagram",
 ];
 
+function trackShare(postId: string, platform: string) {
+  fetch("/api/blog/share", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ postId, platform }),
+    keepalive: true,
+  }).catch(() => {
+    // silently ignore — tracking failures shouldn't surface to the user
+  });
+}
+
+function formatCount(n: number): string {
+  if (n < 1000) return String(n);
+  if (n < 1_000_000) return `${(n / 1000).toFixed(n % 1000 >= 100 ? 1 : 0)}k`;
+  return `${(n / 1_000_000).toFixed(1)}m`;
+}
+
 export default function ShareButtons({
   url,
   title,
+  postId,
+  initialCounts = {},
   variant = "inline",
 }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
+  const [counts, setCounts] = useState<Record<string, number>>(initialCounts);
 
   const handleClick = async (platform: Platform) => {
+    // Optimistic bump — the actual click already happened, so count it now
+    setCounts((prev) => ({ ...prev, [platform]: (prev[platform] ?? 0) + 1 }));
+    trackShare(postId, platform);
+
     const config = ICONS[platform];
 
     if (platform === "instagram" || !config.getHref) {
-      // Instagram has no web share-intent URL; copy the link instead
       try {
         await navigator.clipboard.writeText(url);
         setCopied(true);
@@ -112,29 +137,44 @@ export default function ShareButtons({
       className={
         variant === "floating"
           ? "flex flex-col gap-3"
-          : "flex items-center gap-2"
+          : "flex items-center gap-4"
       }
     >
       {PLATFORM_ORDER.map((platform) => {
         const config = ICONS[platform];
+        const count = counts[platform] ?? 0;
+
         return (
-          <button
+          <div
             key={platform}
-            type="button"
-            onClick={() => handleClick(platform)}
-            aria-label={config.label}
-            title={
-              platform === "instagram"
-                ? copied
-                  ? "Link copied!"
-                  : "Copy link (paste in your Instagram bio/story)"
-                : config.label
+            className={
+              variant === "floating"
+                ? "flex flex-col items-center"
+                : "flex flex-col items-center gap-1"
             }
-            className={buttonClass}
-            style={{ color: config.color }}
           >
-            {config.svg}
-          </button>
+            <button
+              type="button"
+              onClick={() => handleClick(platform)}
+              aria-label={config.label}
+              title={
+                platform === "instagram"
+                  ? copied
+                    ? "Link copied!"
+                    : "Copy link (paste in your Instagram bio/story)"
+                  : config.label
+              }
+              className={buttonClass}
+              style={{ color: config.color }}
+            >
+              {config.svg}
+            </button>
+            {variant === "inline" && (
+              <span className="text-[11px] font-medium text-black/40 min-h-[1em]">
+                {count > 0 ? formatCount(count) : "\u00A0"}
+              </span>
+            )}
+          </div>
         );
       })}
       {variant === "inline" && copied && (

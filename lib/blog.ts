@@ -60,9 +60,9 @@ export async function getFeaturedPosts() {
 }
 
 export async function getPostBySlug(slug: string) {
-    if(!slug) return null;
+    if (!slug) return null;
     return prisma.blogPost.findUnique({
-        where: { slug:slug, published: true },
+        where: { slug: slug, published: true },
     });
 }
 
@@ -71,4 +71,28 @@ export async function getAllPublishedSlugs() {
         where: { published: true },
         select: { slug: true },
     });
+}
+
+// lib/blog.ts (add this)
+export async function getShareCounts(postId: string) {
+    const counts = await prisma.shareEvent.groupBy({
+        by: ["platform"],
+        where: { postId },
+        _count: { platform: true },
+    });
+
+    return counts.reduce(
+        (acc, c) => ({ ...acc, [c.platform]: c._count.platform }),
+        {} as Record<string, number>,
+    );
+}
+
+// For an admin overview across all posts:
+export async function getShareCountsByPost() {
+    const counts = await prisma.shareEvent.groupBy({
+        by: ["postId", "platform"],
+        _count: { platform: true },
+    });
+
+    return counts; // shape: [{ postId, platform, _count: { platform: n } }, ...]
 }

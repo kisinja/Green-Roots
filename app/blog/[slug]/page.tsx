@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getPostBySlug } from "@/lib/blog";
+import { getPostBySlug, getShareCounts } from "@/lib/blog";
 import { generateBlogMetadata, generateBlogJsonLd } from "@/lib/seo";
 import MarkdownRenderer from "@/components/blog/MarkdownRenderer";
 import ReadingProgress from "@/components/blog/ReadingProgress";
@@ -39,6 +39,7 @@ export default async function BlogPostPage({
 
   const jsonLd = generateBlogJsonLd(post);
   const postUrl = `${SITE_URL}/blog/${post.slug}`;
+  const shareCounts = await getShareCounts(post.id);
 
   return (
     <>
@@ -80,7 +81,7 @@ export default async function BlogPostPage({
             </h1>
 
             <div className="flex flex-wrap items-center justify-between gap-6 mb-12">
-              <div className="flex items-center gap-2 text-sm text-green-600">
+              <div className="flex items-center gap-6 text-sm text-green-600">
                 <time dateTime={post.createdAt.toISOString()}>
                   {new Intl.DateTimeFormat("en-KE", {
                     dateStyle: "long",
@@ -90,13 +91,24 @@ export default async function BlogPostPage({
               </div>
 
               {/* Share bar (desktop/inline) */}
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+              <div className="flex items-center gap-6">
+                <span
+                  className="text-xs font-semibold uppercase tracking-wide text-gray-600"
+                  style={{
+                    marginBottom: Object.values(shareCounts).some(
+                      (count) => count > 0,
+                    )
+                      ? "18px"
+                      : undefined,
+                  }}
+                >
                   <Share2 />
                 </span>
                 <ShareButtons
                   url={postUrl}
                   title={post.title}
+                  postId={post.id}
+                  initialCounts={shareCounts}
                   variant="inline"
                 />
               </div>
@@ -121,7 +133,7 @@ export default async function BlogPostPage({
               <div className="flex-1 prose prose-green max-w-none">
                 <div
                   dangerouslySetInnerHTML={{ __html: post.content as string }}
-                  className="prose-headings:scroll-mt-20" // smooth scroll offset
+                  className="prose-headings:scroll-mt-20"
                 />
               </div>
 
@@ -136,7 +148,13 @@ export default async function BlogPostPage({
 
         {/* Share Buttons - Sticky on mobile */}
         <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-40 lg:hidden">
-          <ShareButtons url={postUrl} title={post.title} variant="floating" />
+          <ShareButtons
+            url={postUrl}
+            title={post.title}
+            postId={post.id}
+            initialCounts={shareCounts}
+            variant="floating"
+          />
         </div>
       </div>
     </>

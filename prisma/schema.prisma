@@ -69,9 +69,9 @@ model Order {
   items       OrderItem[]
   payment     Payment?
 
-  waSentAt DateTime?
-  receiptUrl String?
-  receiptNumber String? @unique
+  waSentAt      DateTime?
+  receiptUrl    String?
+  receiptNumber String?   @unique
 }
 
 model OrderItem {
@@ -114,6 +114,17 @@ model Payment {
   order       Order         @relation(fields: [orderId], references: [id])
 }
 
+model ShareEvent {
+  id        String   @id @default(cuid())
+  postId    String
+  platform  String // "whatsapp" | "facebook" | "x" | "linkedin" | "instagram"
+  createdAt DateTime @default(now())
+
+  post BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, platform])
+}
+
 model BlogPost {
   id             String   @id @default(cuid())
   title          String
@@ -130,6 +141,8 @@ model BlogPost {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   readTime       Int?
+
+  shareEvents ShareEvent[]
 }
 
 model CropGuide {
