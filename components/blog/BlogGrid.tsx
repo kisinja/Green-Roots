@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import BlogCard from "./BlogCard";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Sprout } from "lucide-react";
 
 interface BlogGridProps {
   initialPosts: any[];
@@ -42,24 +42,24 @@ export default function BlogGrid({ initialPosts, totalPages }: BlogGridProps) {
   return (
     <div className="max-w-7xl mx-auto px-6 pb-20">
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-x-6 mb-12 gap-y-2">
-        <div className="flex-1 relative my-10">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-green-500 w-5 h-5" />
+      <div className="flex flex-col md:flex-row gap-x-6 mb-12 gap-y-3 pt-10">
+        <div className="flex-1 relative">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--green-600)] w-4 h-4" />
           <input
             type="text"
             placeholder="Search farming tips, crops, soil health..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-14 pr-6 py-4 bg-white border border-green-200 rounded-2xl focus:outline-none focus:border-green-500 placeholder:text-green-400"
+            className="w-full pl-12 pr-6 py-3.5 bg-white border border-[var(--earth-300)]/50 rounded-lg focus:outline-none focus:border-[var(--green-400)] text-[var(--green-900)] placeholder:text-[var(--green-800)]/40"
           />
         </div>
 
         <div className="flex items-center gap-3">
-          <Filter className="text-green-600" />
+          <Filter className="text-[var(--green-600)] w-4 h-4 shrink-0" />
           <select
             value={selectedTag}
             onChange={(e) => setSelectedTag(e.target.value)}
-            className="bg-white border border-green-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-green-500 text-green-700"
+            className="bg-white border border-[var(--earth-300)]/50 rounded-lg px-5 py-3.5 focus:outline-none focus:border-[var(--green-400)] text-[var(--green-800)]"
           >
             <option value="">All Topics</option>
             {allTags.map((tag) => (
@@ -77,7 +77,7 @@ export default function BlogGrid({ initialPosts, totalPages }: BlogGridProps) {
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="h-96 bg-green-50 rounded-3xl animate-pulse"
+              className="h-96 bg-[var(--green-50)] rounded-lg animate-pulse"
             />
           ))}
         </div>
@@ -89,25 +89,27 @@ export default function BlogGrid({ initialPosts, totalPages }: BlogGridProps) {
         </div>
       ) : (
         <div className="text-center py-20">
-          <div className="text-6xl mb-6">🌾</div>
-          <h3 className="text-2xl font-playfair text-green-800 mb-3">
+          <Sprout className="mx-auto h-10 w-10 text-[var(--earth-500)]" />
+          <h3 className="mt-5 font-display text-2xl text-[var(--green-900)]">
             No articles found
           </h3>
-          <p className="text-green-600">Try adjusting your search or filters</p>
+          <p className="mt-2 text-[var(--green-800)]/70">
+            Try adjusting your search or filters
+          </p>
         </div>
       )}
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center gap-3 mt-16">
+        <div className="flex justify-center gap-2.5 mt-16">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
             <button
               key={p}
               onClick={() => setPage(p)}
-              className={`w-12 h-12 rounded-2xl font-medium transition-all ${
+              className={`w-11 h-11 rounded-lg font-medium text-sm transition-colors ${
                 page === p
-                  ? "bg-green-700 text-white"
-                  : "bg-white border border-green-200 hover:border-green-400 text-green-700"
+                  ? "bg-[var(--green-900)] text-[var(--cream)]"
+                  : "bg-white border border-[var(--earth-300)]/50 hover:border-[var(--green-400)] text-[var(--green-800)]"
               }`}
             >
               {p}

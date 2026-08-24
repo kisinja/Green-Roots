@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { Share2 } from "lucide-react";
 
 interface ShareButtonsProps {
   url: string;
@@ -130,29 +131,52 @@ export default function ShareButtons({
   const buttonClass =
     variant === "floating"
       ? "flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-lg transition hover:brightness-125"
-      : "flex h-10 w-10 items-center justify-center rounded-full bg-white border border-black/5 shadow-sm transition hover:brightness-125 hover:shadow-md";
+      : "flex h-10 w-10 items-center justify-center rounded-full bg-white border border-[var(--earth-300)]/50 transition hover:border-[var(--green-400)] hover:brightness-105";
 
+  if (variant === "floating") {
+    return (
+      <div className="flex flex-col gap-3">
+        {PLATFORM_ORDER.map((platform) => {
+          const config = ICONS[platform];
+          return (
+            <button
+              key={platform}
+              type="button"
+              onClick={() => handleClick(platform)}
+              aria-label={config.label}
+              title={config.label}
+              className={buttonClass}
+              style={{ color: config.color }}
+            >
+              {config.svg}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // inline variant — label and every icon column share the same two-row
+  // shape (a fixed-height top row, then a fixed-height count row) so they
+  // align on the icon row regardless of which platforms have counts.
   return (
-    <div
-      className={
-        variant === "floating"
-          ? "flex flex-col gap-3"
-          : "flex items-center gap-4"
-      }
-    >
+    <div className="flex flex-wrap items-start gap-4">
+      <div className="flex flex-col items-center gap-1">
+        <span className="flex h-10 items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--earth-500)]">
+          <Share2 className="h-3.5 w-3.5" />
+          Share
+        </span>
+        <span className="min-h-[1em] text-[11px]" aria-hidden="true">
+          {"\u00A0"}
+        </span>
+      </div>
+
       {PLATFORM_ORDER.map((platform) => {
         const config = ICONS[platform];
         const count = counts[platform] ?? 0;
 
         return (
-          <div
-            key={platform}
-            className={
-              variant === "floating"
-                ? "flex flex-col items-center"
-                : "flex flex-col items-center gap-1"
-            }
-          >
+          <div key={platform} className="flex flex-col items-center gap-1">
             <button
               type="button"
               onClick={() => handleClick(platform)}
@@ -169,16 +193,15 @@ export default function ShareButtons({
             >
               {config.svg}
             </button>
-            {variant === "inline" && (
-              <span className="text-[11px] font-medium text-black/40 min-h-[1em]">
-                {count > 0 ? formatCount(count) : "\u00A0"}
-              </span>
-            )}
+            <span className="min-h-[1em] text-[11px] font-medium text-[var(--green-800)]/50">
+              {count > 0 ? formatCount(count) : "\u00A0"}
+            </span>
           </div>
         );
       })}
-      {variant === "inline" && copied && (
-        <span className="ml-1 text-xs font-medium text-green-700">
+
+      {copied && (
+        <span className="flex h-10 items-center text-xs font-medium text-[var(--green-700)]">
           Link copied!
         </span>
       )}

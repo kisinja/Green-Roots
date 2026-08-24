@@ -1,7 +1,7 @@
 // components/blog/BlogCard.tsx
-import Image from 'next/image';
-import Link from 'next/link';
-import { Calendar, Clock } from 'lucide-react';
+import Image from "next/image";
+import Link from "next/link";
+import { Calendar, Clock, Sprout, ArrowUpRight } from "lucide-react";
 
 interface BlogCardProps {
   post: {
@@ -17,20 +17,16 @@ interface BlogCardProps {
 }
 
 export default function BlogCard({ post }: BlogCardProps) {
-  const formattedDate = new Intl.DateTimeFormat('en-KE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour:"numeric",
-    minute:"2-digit",
-    hour12:true
+  const formattedDate = new Intl.DateTimeFormat("en-KE", {
+    year: "numeric",
+    month: "short",
   }).format(new Date(post.createdAt));
 
   return (
     <Link href={`/blog/${post.slug}`} className="group block h-full">
-      <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 h-full flex flex-col border border-green-100">
+      <div className="bg-white rounded-lg overflow-hidden border border-[var(--earth-300)]/50 hover:border-[var(--green-400)] transition-colors duration-300 h-full flex flex-col">
         {/* Image */}
-        <div className="relative h-64 overflow-hidden">
+        <div className="relative h-56 overflow-hidden">
           {post.coverImage ? (
             <Image
               src={post.coverImage}
@@ -39,45 +35,45 @@ export default function BlogCard({ post }: BlogCardProps) {
               className="object-cover group-hover:scale-105 transition-transform duration-700"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-green-100 to-earth-300 flex items-center justify-center">
-              <span className="text-6xl">🌱</span>
+            <div className="w-full h-full bg-[var(--green-50)] flex items-center justify-center">
+              <Sprout className="h-10 w-10 text-[var(--earth-500)]" />
             </div>
           )}
-          <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-green-800">
-            {post.readTime || 5} min read
-          </div>
         </div>
 
         {/* Content */}
-        <div className="p-8 flex-1 flex flex-col">
+        <div className="p-6 flex-1 flex flex-col">
           <div className="flex gap-2 mb-4 flex-wrap">
             {post.tags.slice(0, 2).map((tag) => (
               <span
                 key={tag}
-                className="text-xs px-3 py-1 bg-green-50 text-green-700 rounded-full font-medium"
+                className="text-xs px-2.5 py-1 border border-[var(--earth-300)]/60 text-[var(--earth-500)] rounded-full font-medium"
               >
-                #{tag}
+                {tag}
               </span>
             ))}
           </div>
 
-          <h3 className="font-playfair text-2xl leading-tight text-green-900 mb-4 line-clamp-3 group-hover:text-green-700 transition-colors">
+          <h3 className="font-display text-xl leading-tight text-[var(--green-900)] mb-3 line-clamp-3 group-hover:text-[var(--green-700)] transition-colors">
             {post.title}
           </h3>
 
-          <p className="text-green-600/90 line-clamp-3 mb-6 flex-1">
+          <p className="text-sm text-[var(--green-800)]/70 leading-6 line-clamp-3 mb-6 flex-1">
             {post.excerpt}
           </p>
 
-          <div className="flex items-center justify-between text-sm text-green-600 pt-6 border-t border-green-100 mt-auto">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              {formattedDate}
+          <div className="flex items-center justify-between text-xs text-[var(--green-800)]/60 pt-5 border-t border-[var(--earth-300)]/30 mt-auto">
+            <div className="flex items-center gap-4">
+              <span className="flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5" />
+                {formattedDate}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" />
+                {post.readTime || 5} min
+              </span>
             </div>
-            <div className="flex items-center gap-1 text-earth-500">
-              <Clock className="w-4 h-4" />
-              {post.readTime} min
-            </div>
+            <ArrowUpRight className="w-4 h-4 text-[var(--earth-500)] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </div>
         </div>
       </div>

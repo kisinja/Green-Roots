@@ -66,7 +66,7 @@ export default async function BlogPostPage({
         )}
 
         <div className="max-w-6xl mx-auto px-6 -mt-20 relative z-10">
-          <div className="bg-white rounded-3xl shadow-xl p-10 md:p-16">
+          <div className="bg-white rounded-t-3xl shadow-md p-10 md:p-16">
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-2 text-sm text-green-600 mb-8">
               <Link href="/blog" className="hover:text-green-700">
@@ -76,7 +76,7 @@ export default async function BlogPostPage({
               <span className="text-green-800">{post.title}</span>
             </nav>
 
-            <h1 className="font-playfair text-5xl md:text-6xl leading-tight text-green-900 mb-8">
+            <h1 className="font-playfair text-2xl sm:text-3xl md:text-5xl  lg:text-6xl leading-tight text-green-900 mb-8">
               {post.title}
             </h1>
 
@@ -91,19 +91,7 @@ export default async function BlogPostPage({
               </div>
 
               {/* Share bar (desktop/inline) */}
-              <div className="flex items-center gap-6">
-                <span
-                  className="text-xs font-semibold uppercase tracking-wide text-gray-600"
-                  style={{
-                    marginBottom: Object.values(shareCounts).some(
-                      (count) => count > 0,
-                    )
-                      ? "18px"
-                      : undefined,
-                  }}
-                >
-                  <Share2 />
-                </span>
+              <div className="flex items-center gap-4 border-t border-[var(--earth-300)]/30 pt-6">
                 <ShareButtons
                   url={postUrl}
                   title={post.title}
