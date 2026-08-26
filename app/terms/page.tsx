@@ -17,6 +17,14 @@ const sections = [
   },
   {
     n: "2",
+    title: "Customer Accounts",
+    body: [
+      "Customers are required to create an account before placing an order through Mkulima Supply.",
+      "Customers are responsible for providing accurate and up-to-date information when creating and maintaining their accounts and for keeping their account credentials secure.",
+    ],
+  },
+  {
+    n: "3",
     title: "Products",
     body: [
       "We make reasonable efforts to ensure that product descriptions, images, prices, and availability are accurate. However, product information may occasionally change or contain errors.",
@@ -24,43 +32,50 @@ const sections = [
     ],
   },
   {
-    n: "3",
+    n: "4",
     title: "Orders",
     body: [
-      "Placing an order through the website constitutes a request to purchase the selected products. Orders may be subject to confirmation and availability.",
-    ],
-  },
-  {
-    n: "4",
-    title: "Pricing",
-    body: [
-      "Product prices displayed on the website are subject to change. Where applicable, delivery charges or other applicable charges will be communicated during the ordering process.",
+      "Placing an order through the website constitutes a request to purchase the selected products. Orders are subject to product availability and successful payment.",
+      "If an ordered item is unavailable, Mkulima Supply will inform the customer and handle the applicable refund in accordance with our Returns & Refunds policy.",
     ],
   },
   {
     n: "5",
-    title: "Payments",
+    title: "Pricing",
     body: [
-      "Available payment methods will be displayed during checkout. Payments may be processed through third-party payment providers.",
+      "Product prices displayed on the website are subject to change. Where applicable, delivery charges or other applicable charges will be communicated during the ordering process.",
+      "Delivery charges depend on the customer's location and the size of the package.",
     ],
   },
   {
     n: "6",
-    title: "Delivery",
+    title: "Payments",
     body: [
-      "Delivery is subject to the delivery terms, location, product availability, and other circumstances applicable to each order. Please refer to our Shipping & Delivery page for more information.",
+      "Mkulima Supply currently accepts payments through M-Pesa using IntaSend.",
+      "Cash on delivery is not currently available. Orders must be paid through the available payment method before fulfilment and delivery.",
     ],
   },
   {
     n: "7",
-    title: "Returns and Refunds",
+    title: "Delivery",
     body: [
-      "Mkulima Supply does not accept returns on purchased products.",
-      "Refunds are only provided where an ordered item is unavailable in stock. In such circumstances, the customer will be informed and the applicable refund will be arranged.",
+      "Mkulima Supply provides delivery services nationwide in Kenya.",
+      "Delivery charges depend on the customer's location and the size of the package.",
+      "Delivery times may vary depending on the customer's location, product availability, order processing, and delivery arrangements.",
+      "Please refer to our Shipping & Delivery page for additional information.",
     ],
   },
   {
     n: "8",
+    title: "Returns and Refunds",
+    body: [
+      "Mkulima Supply does not accept returns on purchased products.",
+      "Refunds are only provided where an ordered item is unavailable in stock. In such circumstances, the customer will be informed and the applicable refund will be arranged.",
+      "Customers are encouraged to carefully review their order details before completing payment.",
+    ],
+  },
+  {
+    n: "9",
     title: "Agricultural Information",
     body: [
       "Agricultural articles, guides, recommendations, and other educational content published on Mkulima Supply are provided for general informational purposes.",
@@ -68,24 +83,33 @@ const sections = [
     ],
   },
   {
-    n: "9",
+    n: "10",
     title: "Intellectual Property",
     body: [
-      "Unless otherwise stated, content published on this website, including text, graphics, logos, and other materials, belongs to Mkulima Supply or its respective licensors and may not be reproduced without appropriate permission.",
+      "Unless otherwise stated, content published on this website, including text, graphics, logos, images, and other materials, belongs to Mkulima Supply or its respective licensors and may not be reproduced, distributed, or commercially used without appropriate permission.",
     ],
   },
   {
-    n: "10",
+    n: "11",
+    title: "Third-Party Services",
+    body: [
+      "Certain website functions may depend on third-party services, including payment, hosting, analytics, communications, and advertising providers.",
+      "The availability and operation of such services may be subject to the respective provider's terms and policies.",
+    ],
+  },
+  {
+    n: "12",
     title: "Changes",
     body: [
       "We may update these Terms & Conditions when necessary. Updated versions will be published on this page.",
     ],
   },
   {
-    n: "11",
+    n: "13",
     title: "Contact",
     body: [
       "If you have questions about these Terms & Conditions, contact Mkulima Supply using the contact information provided on our website.",
+      "You may also contact us by phone at +254 746 403931 or visit us in Ongata Rongai, Nairobi, Kenya.",
     ],
   },
 ];
@@ -100,7 +124,7 @@ export default function TermsPage() {
             Terms & Conditions
           </h1>
           <p className="mt-3 inline-block rounded-full border border-[var(--cream)]/20 px-3 py-1 text-xs text-[var(--cream)]/60">
-            Last updated: August 24, 2026
+            Last updated: August 26, 2026
           </p>
         </div>
         <div className="absolute inset-x-0 bottom-0 translate-y-px">

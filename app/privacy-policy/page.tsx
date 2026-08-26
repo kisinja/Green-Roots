@@ -12,7 +12,8 @@ const sections = [
     n: "1",
     title: "Information We Collect",
     body: [
-      "Depending on how you use our website, we may collect information such as your name, phone number, email address, delivery information, order information, and other information you voluntarily provide.",
+      "To create an account and place an order through Mkulima Supply, we collect personal information such as your name, phone number, email address, and delivery address.",
+      "We may also collect information relating to your orders, including products purchased, quantities, order status, delivery information, and other information necessary to process and fulfil your order.",
       "We may also collect technical information such as browser type, device information, pages visited, and general usage information when you interact with our website.",
     ],
   },
@@ -21,11 +22,13 @@ const sections = [
     title: "How We Use Information",
     body: ["We may use collected information to:"],
     list: [
+      "Create and manage customer accounts.",
       "Process and manage orders.",
-      "Communicate with customers.",
+      "Arrange delivery of purchased products.",
+      "Communicate with customers about their orders.",
       "Provide customer support.",
-      "Improve our website and services.",
-      "Maintain website security.",
+      "Improve our website, products, and services.",
+      "Maintain website security and prevent misuse.",
       "Understand how visitors use our website.",
     ],
   },
@@ -33,38 +36,41 @@ const sections = [
     n: "3",
     title: "Payments",
     body: [
-      "Payments may be processed through third-party payment providers. Payment information may therefore be handled according to the privacy policies and terms of those providers.",
+      "Mkulima Supply currently accepts payments through M-Pesa using IntaSend. Payment processing is handled through the applicable payment service provider.",
       "Mkulima Supply does not intentionally collect or store sensitive payment credentials such as your M-Pesa PIN.",
+      "Payment-related information may be processed by IntaSend in accordance with its applicable terms and privacy practices.",
+      "Mkulima Supply does not currently offer cash on delivery. Orders are paid through the available payment method before fulfilment and delivery.",
     ],
   },
   {
     n: "4",
     title: "Cookies and Similar Technologies",
     body: [
-      "Our website may use cookies and similar technologies to support functionality, understand website usage, improve the user experience, and, where applicable, support advertising.",
-      "If third-party advertising services such as Google AdSense are enabled, those services may use cookies or similar technologies in accordance with their own policies and applicable requirements.",
+      "Our website may use cookies and similar technologies to support website functionality, maintain user sessions, understand website usage, improve the user experience, and maintain website security.",
+      "If third-party advertising services such as Google AdSense are enabled, those services may use cookies or similar technologies to provide, personalize, measure, and improve advertising in accordance with their own policies and applicable requirements.",
     ],
   },
   {
     n: "5",
     title: "Third-Party Services",
     body: [
-      "We may use trusted third-party services to provide functionality such as payments, analytics, hosting, communications, advertising, and other website services.",
-      "These third parties may process information according to their own privacy policies.",
+      "We may use trusted third-party services to provide functionality such as payment processing, hosting, analytics, communications, advertising, and other website services.",
+      "These third parties may process information according to their own privacy policies and terms. Such services may include IntaSend for payment processing and Google services for analytics or advertising where applicable.",
     ],
   },
   {
     n: "6",
     title: "Data Security",
     body: [
-      "We take reasonable measures to protect information against unauthorized access, alteration, disclosure, or destruction. However, no internet-based service can guarantee absolute security.",
+      "We take reasonable technical and organizational measures to protect customer information against unauthorized access, alteration, disclosure, loss, misuse, or destruction.",
+      "However, no internet-based service or method of electronic storage can guarantee absolute security.",
     ],
   },
   {
     n: "7",
     title: "Data Retention",
     body: [
-      "We retain information for as long as reasonably necessary for the purposes described in this policy, including fulfilling orders, providing services, meeting legal obligations, and resolving disputes.",
+      "We retain customer and order information for as long as reasonably necessary to provide our services, manage customer accounts, fulfil orders, maintain business records, meet applicable legal obligations, and resolve disputes.",
     ],
   },
   {
@@ -72,6 +78,7 @@ const sections = [
     title: "Your Rights",
     body: [
       "Depending on applicable law, you may have rights concerning your personal information, including requesting access to or correction of information held about you.",
+      "If you have a privacy-related request or believe that information we hold about you is inaccurate, please contact Mkulima Supply using the contact details provided on our Contact page.",
     ],
   },
   {
@@ -79,13 +86,15 @@ const sections = [
     title: "Contact Us",
     body: [
       "For privacy-related questions or requests, contact Mkulima Supply through the contact details provided on our Contact page.",
+      "You may also contact us by phone at +254 746 403931 or visit us in Ongata Rongai, Nairobi, Kenya.",
     ],
   },
   {
     n: "10",
     title: "Changes to This Policy",
     body: [
-      "We may update this Privacy Policy from time to time. Any changes will be reflected on this page with an updated revision date.",
+      "We may update this Privacy Policy from time to time to reflect changes to our services, technology, legal requirements, or business practices.",
+      "Any changes will be reflected on this page with an updated revision date.",
     ],
   },
 ];
@@ -100,7 +109,7 @@ export default function PrivacyPolicyPage() {
             Privacy Policy
           </h1>
           <p className="mt-3 inline-block rounded-full border border-[var(--cream)]/20 px-3 py-1 text-xs text-[var(--cream)]/60">
-            Last updated: August 24, 2026
+            Last updated: August 26, 2026
           </p>
         </div>
         <div className="absolute inset-x-0 bottom-0 translate-y-px">
@@ -111,8 +120,8 @@ export default function PrivacyPolicyPage() {
       <div className="mx-auto max-w-5xl px-6 py-14">
         <p className="max-w-2xl leading-7 text-[var(--green-800)]/80">
           Mkulima Supply respects your privacy and is committed to protecting
-          the personal information you provide when using our website and
-          services.
+          the personal information you provide when using our website, creating
+          an account, placing an order, and using our services.
         </p>
 
         <div className="mt-12 grid gap-10 sm:grid-cols-[180px_1fr] sm:gap-12">

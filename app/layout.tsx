@@ -4,6 +4,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { CartDrawer } from "@/components/shop/CartDrawer";
 import { Toaster } from "@/components/ui/Toaster";
 import Footer from "@/components/layout/Footer";
+import Script from "next/script";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://www.mkulimasupply.store";
@@ -102,6 +103,12 @@ export default function RootLayout({
         <CartDrawer />
         <Toaster />
         <Footer SITE_NAME={SITE_NAME} />
+
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6605189604076634"
+          crossOrigin="anonymous"
+        />
       </body>
     </html>
   );
