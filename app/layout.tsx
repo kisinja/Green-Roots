@@ -96,6 +96,12 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap"
           rel="stylesheet"
         />
+
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6605189604076634"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="min-h-screen bg-[#fefcf8] text-gray-900 antialiased">
         <Navbar />
@@ -103,12 +109,6 @@ export default function RootLayout({
         <CartDrawer />
         <Toaster />
         <Footer SITE_NAME={SITE_NAME} />
-
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6605189604076634"
-          crossOrigin="anonymous"
-        />
       </body>
     </html>
   );
